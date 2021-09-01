@@ -40,10 +40,8 @@ los mismos.
 
 def newCatalog():
     """
-    Inicializa el catálogo de libros. Crea una lista vacia para guardar
-    todos los libros, adicionalmente, crea una lista vacia para los autores,
-    una lista vacia para los generos y una lista vacia para la asociación
-    generos y libros. Retorna el catalogo inicializado.
+    Inicializa el catálogo de . Crea dos listas vacias, una para las obras 
+    y otro para los artistas
     """
     catalog = {'Artwork': None,
                'Artist': None}
