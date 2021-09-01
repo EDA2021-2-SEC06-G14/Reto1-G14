@@ -49,7 +49,14 @@ def initCatalog():
     """
     Inicializa el catalogo de libros
     """
-    print("Esta funcion se implementara en un futuro")
+    return controller.initCatalog()
+
+def loadData(catalog):
+
+    """
+    Carga datos en el catalogo
+    """
+    controller.loadData(catalog)
 
 def croartistas(inicial, final):
     """
@@ -101,8 +108,22 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("Cargando información de los archivos ....\n")
         catalog = initCatalog()
+        loadData(catalog)
+        sizeartista = lt.size(catalog["Artist"])
+        sizeartwork = lt.size(catalog["Artwork"])
+        print("Artistas cargados: " + str(sizeartista))
+        print("Obras cargadas: " + str(sizeartwork))
+        print("Ultimos tres artistas: \n")
+        print(lt.getElement(catalog["Artist"], sizeartista-2))
+        print(lt.getElement(catalog["Artist"], sizeartista-1))
+        print(lt.getElement(catalog["Artist"], sizeartista ))
+        print("\nUltimas tres obras: \n")
+        print(lt.getElement(catalog["Artwork"], sizeartwork-2))
+        print(lt.getElement(catalog["Artwork"], sizeartwork-1))
+        print(lt.getElement(catalog["Artwork"], sizeartwork))
+
 
     elif int(inputs[0]) == 2:
         inicial = input("Año inicial: ")
