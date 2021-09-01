@@ -18,3 +18,4 @@ Este directorio contiene las pruebas realizadas a los TADs, Estructuras de Datos
 
 Req. 1 - Sebastian Guerrero Rios,202021249, s.guerrero3@uniandes.edu.co
 Req. 2 - Diego Alejandro González Vargas, 202110240, da.gonzalezv1@uniandes.edu.co
+
