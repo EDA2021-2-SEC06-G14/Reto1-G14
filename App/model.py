@@ -59,12 +59,8 @@ def addArtwork(catalog, artwork):
     """
     new = newArtwork()
 
-    LoadID(new, artwork)
-    LoadTitle(new, artwork)
-    LoadConstituent(new, artwork)
-    LoadMedium(new, artwork)
-    LoadAcquired(new, artwork)
-    LoadDimensions(new, artwork)
+    for key in new.keys():
+        new[key] = artwork[key]
 
     lt.addLast(catalog["Artwork"], new)
 
@@ -72,103 +68,44 @@ def newArtwork():
     """
     Se crea un diccionario par cada obra
     """
-    new = {'ID' : None,
+    new = {'ObjectID' : None,
            'Title' : None,
-           'Constituent ID': None,
+           'ConstituentID': None,
            'Medium': None,
+           'Dimensions': None,
+           'CreditLine': None,
+           'Classification': None,
            'Department': None,
-           'Date_Acquired': None,
-           'Dimensions': None}
+           'DateAcquired': None,
+           }
 
-    new['Constituent ID'] = lt.newList()
+    new['ConstituentID'] = lt.newList()
 
     return new
 
-def LoadID(new, artwork):
-    """
-    Carga el ID de la obra
-    """
-    new["ID"] = artwork["ObjectID"]
-
-def LoadTitle(new, artwork):
-    """
-    Carga el titulo de la obra
-    """
-    new["Title"] = artwork["Title"]
-
-def LoadConstituent(new, artwork):
-    """
-    Carga los artistas de la obra
-    """
-    const = artwork["ConstituentID"].strip(" ").strip("[]").split(',')
-
-    for i in const:
-        lt.addLast(new['Constituent ID'], i)
-
-def LoadMedium(new, artwork):
-    """
-    Carga la tecnica de la obra
-    """
-    new["Medium"] = artwork["Medium"]
-
-def LoadDepartment(new, artwork):
-    """
-    carga el departamento en el que esta la obra
-    """
-    new["Department"] = artwork["Department"]
-
-def LoadAcquired(new, artwork):
-    """
-    Carga fecha de adquisicion de la obra 
-    """
-    new["Date_Acquired"] = artwork["DateAcquired"]
-
-def LoadDimensions(new, artwork):
-    new["Dimensions"] = artwork["Dimensions"]
-
 def addArtist(catalog, artist):
-    """
-    Carga solo la informacion necesaria de los artistas al catalogo
-    """
+
     new = newArtist()
 
-    LoadCont_2(new, artist)
-    LoadName(new, artist)
-    LoadNationality(new, artist)
-    LoadBorn(new, artist)
+    for key in new.keys():
+        new[key] = artist[key]
 
     lt.addLast(catalog["Artist"], new)
+
 
 def newArtist():
     """
     Crea un nuevo diccionario para cada artista
     """
-    new = {'Constituent ID': None,
-           'Display_Name': None,
+    new = {'ConstituentID': None,
+           'DisplayName': None,
            'Nationality': None,
-           'BeginDate': None}
+           'Gender': None,
+           'BeginDate': None,
+           'EndDate': None
+           }
     return new
 
-def LoadCont_2(new, artist):
-    """
-    Carga ID del artista
-    """
-    new["Constituent ID"] = artist["ConstituentID"]
-
-def LoadName(new, artist):
-    """
-    Carga nombre del artista
-    """
-    new["Display_Name"] = artist["DisplayName"]
-
-def LoadNationality(new, artist):
-    """
-    Carga la nacionalidad del artista
-    """
-    new["Nationality"] = artist["Nationality"]
-
-def LoadBorn(new, artist):
-    new["BeginDate"] = artist["BeginDate"]
 
 
 # Funciones para creacion de datos
