@@ -85,27 +85,28 @@ def newArtwork():
 
 def addArtist(catalog, artist):
 
-    new = newArtist()
-
-    for key in new.keys():
-        new[key] = artist[key]
-
-    lt.addLast(catalog["Artist"], new)
+    lt.addLast(catalog["Artist"], artist)
 
 
-def newArtist():
-    """
-    Crea un nuevo diccionario para cada artista
-    """
-    new = {'ConstituentID': None,
-           'DisplayName': None,
-           'Nationality': None,
-           'Gender': None,
-           'BeginDate': None,
-           'EndDate': None
-           }
-    return new
 
+def GetArtistas(catalog, inicial, final):
+
+    en_rango = lt.newList()
+    artistas  = lt.iterator(catalog["Artist"])
+
+
+    for artista in artistas:
+        if (int(artista["BeginDate"]) >= inicial) and (int(artista["BeginDate"]) <= final):
+            lt.addLast(en_rango, artista)
+
+    sa.sort(en_rango, compareBeginDate)
+
+    return en_rango
+
+
+def compareBeginDate(artist1, artist2):
+
+    return (int(artist1["BeginDate"])) < (int(artist2["BeginDate"]))
 
 
 # Funciones para creacion de datos
