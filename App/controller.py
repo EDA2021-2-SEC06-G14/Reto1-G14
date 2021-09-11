@@ -69,10 +69,14 @@ def loadArtistas(catalog):
     for artist in inputfile:
         model.addArtist(catalog, artist)
 
-
-
-
-
 # Funciones de ordenamiento
+
+def GetArtistas(catalog, inicial, final):
+    """
+    Encontrar los artistas en un rango de anos     
+    """
+    Artistas = model.GetArtistas(catalog, inicial, final)
+
+    return Artistas
 
 # Funciones de consulta sobre el catálogo

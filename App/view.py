@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from prettytable import PrettyTable, ALL
 assert cf
 
 
@@ -58,46 +59,37 @@ def loadData(catalog):
     """
     controller.loadData(catalog)
 
-def croartistas(inicial, final):
-    """
-    Lista cronologicamente los artistas que nacieron en 
-    un rango de anos
-    """
-    print("Esta funcion se implementara en un futuro")
+def printartistas(artistas, inicial, final):
 
-def croadquisiciones(inicial, final):
     """
-    Lista cronologicamente las obras adquiridas por el museo
-    en un rango de fechas 
+    Imprime los artistas nacidos en rango de anos 
     """
-    print("Esta funcion se implementara en un futuro")
 
-def clatecnica(artista):
-    """
-    Clasifica las obras de un artista de acuerdo a la tecnica de
-    (medio) utilizada para su creacion
-    """
-    print("Esta funcion se implementara en un futuro")
+    size = lt.size(artistas)
 
-def clanacionalidad():
-    """"
-    Clasifica las obras por la nacionalidad de sus creadores
-    """
-    print("Esta funcion se implementara en un futuro")
+    print("============= Req No. 1 Inputs =============")
+    print("Artist born between " + str(inicial) + " and " + str(final) + "\n")
+    print("============= Req No. 1 Answer =============")
+    print("There are " + str(size) + " artist born between " + str(inicial) + " and " + str(final) + "\n")
+    print("The first and last 3 artists in range are")
+    x = PrettyTable()
+    x.field_names = (["ConstituentID","DisplayName","BeginDate","Nationality","Gender","ArtistBio","Wiki QID","ULAN"])
+    x.hrules=ALL
 
-def transportar():
-    """
-    Calcula el costo para transportar todas las obras de un departamento
-    del MoMA segun las reglas del proveedor del museo (UPS)
-    """
-    print("Esta funcion se implementara en un futuro")
+    for i in range(1, 4):
+        artista = lt.getElement(artistas, i)
+        
+        x.add_row([artista["ConstituentID"], artista["DisplayName"], artista["BeginDate"],
+                   artista["Nationality"], artista["Gender"], artista["ArtistBio"], 
+                   artista["Wiki QID"], artista["ULAN"]])
 
-def new():
-    """
-    Proponer una nueva exposicion segun un area disponible en
-    las instalaciones del MoMA
-    """
-    print("Esta funcion se implementara en un futuro")
+    for i in range(size-2, size+1):
+        artista = lt.getElement(artistas, i)
+        x.add_row([artista["ConstituentID"], artista["DisplayName"], artista["BeginDate"],
+                   artista["Nationality"], artista["Gender"], artista["ArtistBio"], 
+                   artista["Wiki QID"], artista["ULAN"]])
+        
+    print(x)
 
 catalog = None
 
@@ -126,30 +118,32 @@ while True:
 
 
     elif int(inputs[0]) == 2:
-        inicial = input("Año inicial: ")
-        final = input("Año final: ")
-        print("Se estan organizando los artistas cronologicamente...")
-        artistas = croartistas(inicial, final)
+        inicial = int(input("Año inicial: "))
+        final = int(input("Año final: "))
+        print("Se estan obteniendo los artistas...")
+        artistas = controller.GetArtistas(catalog, inicial, final)
+        printartistas(artistas, inicial, final)
+        
 
     elif int(inputs[0]) == 3:
         inicial = input("Año inicial: ")
         final = input("Año final: ")
         print("Se estan organizando las adquisiciones cronologicamente...")
-        obras = croadquisiciones(inicial, final)
+        
 
     elif int(inputs[0] == 4):
         artista = input("Artista: ")
         print("Se estan organizando las obras por tecnica...")
-        obras = clatecnica(artista)
+        
 
     elif int(inputs[0] == 5):
         print("Se estan organizando las obras por la nacionalidad...")
-        obras = clanacionalidad()
+        
 
     elif int(inputs[0] == 6):
         depar = input("Departamento del museo...")
         print("Se esta calculando el costo...")
-        costo = transportar()
+        
 
     elif int(inputs[0] == 7):
         pass
