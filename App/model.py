@@ -64,8 +64,14 @@ def addArtwork(catalog, artwork,tipo):
     new = newArtwork(tipo)
 
     for key in new.keys():
-        new[key] = artwork[key]
 
+        if key == "DateAcquired" and artwork["DateAcquired"] == "":
+            new[key] = "0"
+
+        else:
+            new[key] = artwork[key]
+
+    
     lt.addLast(catalog["Artwork"], new)
 
 def newArtwork(tipo):
@@ -116,12 +122,7 @@ def GetArtwork(catalog, inicial, final, size, sort):
     obras = lt.iterator(sub_list)
 
     for obra in obras:
-
-        if obra["DateAcquired"] != "":
-            Date = int(obra["DateAcquired"].replace("-", ""))
-        else:
-            Date = 0
-        
+        Date = int(obra["DateAcquired"].replace("-", ""))
         if (Date >= inicial) and (Date <= final):
             lt.addLast(en_rango, obra)
 
@@ -156,17 +157,7 @@ def compareBeginDate(artist1, artist2):
 
 def cmpArtworkByDateAcquired(Artwork1, Artwork2):
 
-    if Artwork1["DateAcquired"] != "":
-        Data1 = Artwork1["DateAcquired"]
-    else:
-        Data1 = "0"
-
-    if Artwork2["DateAcquired"] != "":
-        Data2 = Artwork2["DateAcquired"]
-    else:
-        Data2 = "0"
-
-    return (int(Data1.replace("-", ""))) < (int(Data2.replace("-", "")))
+    return (int(Artwork1["DateAcquired"].replace("-", ""))) < (int(Artwork2["DateAcquired"].replace("-", "")))
 
 # Funciones para creacion de datos
 
