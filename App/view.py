@@ -46,18 +46,74 @@ def printMenu():
     print("7- Proponer una nueva exposicion en el museo")
     print("0- Salir")
 
-def initCatalog():
+def initCatalog(tipo):
     """
     Inicializa el catalogo de libros
     """
-    return controller.initCatalog()
+    return controller.initCatalog(tipo)
 
-def loadData(catalog):
+def loadData(catalog, tipo):
 
     """
     Carga datos en el catalogo
     """
-    controller.loadData(catalog)
+    controller.loadData(catalog, tipo)
+
+def seleccionrep():
+    print("1. ARRAY_LIST")
+    print("2. LINKED_LIST")
+    inp = int(input("Seleccione el tipo de representacion de datos: \n"))
+    if inp == 1:
+        tipo = "ARRAY_LIST"
+    elif inp == 2:
+        tipo = "LINKED_LIST"
+    else:
+        print("No selecciono una opcion valida")
+        seleccionrep()
+    return tipo
+
+def sizesublist():
+    size = int(input("Indique el tamaño de la muestra: "))
+    if size > lt.size(catalog["Artwork"]):
+        print("El valor debe ser menor a los datos cargados")
+        sizesublist()
+    else:
+        return size
+
+def selectSort():
+    print("1. Insertion")
+    print("2. Shell")
+    print("3. Merge")
+    print("4. Quick Sort")
+
+    inp = int(input("Seleccione el algoritmo de ordenamiento: \n"))
+    if inp == 1:
+        sort = "ins"
+    elif inp == 2:
+        sort = "sa"
+    elif inp == 3:
+        sort = "me"
+    elif inp == 4:
+        sort = "qs"
+    else:
+        print("No selecciono una opcion valida")
+        selectSort()
+    return sort
+
+def printcarga(catalog):
+
+    sizeartista = lt.size(catalog["Artist"])
+    sizeartwork = lt.size(catalog["Artwork"])
+    print("Artistas cargados: " + str(sizeartista))
+    print("Obras cargadas: " + str(sizeartwork))
+    print("Ultimos tres artistas: \n")
+    print(lt.getElement(catalog["Artist"], sizeartista-2))
+    print(lt.getElement(catalog["Artist"], sizeartista-1))
+    print(lt.getElement(catalog["Artist"], sizeartista ))
+    print("\nUltimas tres obras: \n")
+    print(lt.getElement(catalog["Artwork"], sizeartwork-2))
+    print(lt.getElement(catalog["Artwork"], sizeartwork-1))
+    print(lt.getElement(catalog["Artwork"], sizeartwork))
 
 def printartistas(artistas, inicial, final):
 
@@ -74,6 +130,7 @@ def printartistas(artistas, inicial, final):
     print("The first and last 3 artists in range are")
     x = PrettyTable()
     x.field_names = (["ConstituentID","DisplayName","BeginDate","Nationality","Gender","ArtistBio","Wiki QID","ULAN"])
+    x.max_width = 25
     x.hrules=ALL
 
     for i in range(1, 4):
@@ -91,6 +148,45 @@ def printartistas(artistas, inicial, final):
         
     print(x)
 
+def printArtworks(artworks, inicial, final):
+
+    size = lt.size(artworks)
+
+    print("============= Req No. 2 Inputs =============")
+    print("Artworks acquired betweem " + str(inicial) + " and " + str(final) + "\n")
+    print("============= Req No. 2 Answer =============")
+    print("There MoMA acquired " + str(size) + " unique pieces between " + str(inicial) + " and " + str(final) + "\n")
+    print("The first and last 3 artists in range are")
+    x = PrettyTable()
+    
+    x.field_names = (["ObjectID","Title","ConstituentID", "Medium", "Dimensions",
+                      "DateAcquired", "URL"])
+    x.max_width = 25
+    x.hrules=ALL
+
+    if size >= 6:
+        for i in range(1, 4):
+            artwork = lt.getElement(artworks, i)
+            
+            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+                    artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
+                    artwork["URL"]])
+
+        for i in range(size-2, size+1):
+            artwork = lt.getElement(artworks, i)
+            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+                    artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
+                    artwork["URL"]])
+    
+    else:
+        for i in range(1,size+1):
+            artwork = lt.getElement(artworks, i)
+            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+                        artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
+                        artwork["URL"]])
+
+    print(x)
+
 catalog = None
 
 """
@@ -100,21 +196,11 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        tipo = seleccionrep()
         print("Cargando información de los archivos ....\n")
-        catalog = initCatalog()
-        loadData(catalog)
-        sizeartista = lt.size(catalog["Artist"])
-        sizeartwork = lt.size(catalog["Artwork"])
-        print("Artistas cargados: " + str(sizeartista))
-        print("Obras cargadas: " + str(sizeartwork))
-        print("Ultimos tres artistas: \n")
-        print(lt.getElement(catalog["Artist"], sizeartista-2))
-        print(lt.getElement(catalog["Artist"], sizeartista-1))
-        print(lt.getElement(catalog["Artist"], sizeartista ))
-        print("\nUltimas tres obras: \n")
-        print(lt.getElement(catalog["Artwork"], sizeartwork-2))
-        print(lt.getElement(catalog["Artwork"], sizeartwork-1))
-        print(lt.getElement(catalog["Artwork"], sizeartwork))
+        catalog = initCatalog(tipo)
+        loadData(catalog, tipo)
+        printcarga(catalog)
 
 
     elif int(inputs[0]) == 2:
@@ -126,9 +212,14 @@ while True:
         
 
     elif int(inputs[0]) == 3:
+        size = sizesublist()
+        sort = selectSort()
         inicial = input("Año inicial: ")
         final = input("Año final: ")
         print("Se estan organizando las adquisiciones cronologicamente...")
+        obras = controller.GetArtwork(catalog, inicial, final, size, sort)
+        printArtworks(obras[1], inicial, final)
+        print("Tiempo de organizacion: " + str(obras[0] + " msg"))
         
 
     elif int(inputs[0] == 4):
