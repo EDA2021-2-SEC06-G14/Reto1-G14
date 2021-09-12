@@ -156,7 +156,17 @@ def compareBeginDate(artist1, artist2):
 
 def cmpArtworkByDateAcquired(Artwork1, Artwork2):
 
-    return (int(Artwork1["DateAcquired"].replace("-", ""))) < (int(Artwork2["DateAcquired"].replace("-", "")))
+    if Artwork1["DateAcquired"] != "":
+        Data1 = Artwork1["DateAcquired"]
+    else:
+        Data1 = "0"
+
+    if Artwork2["DateAcquired"] != "":
+        Data2 = Artwork2["DateAcquired"]
+    else:
+        Data2 = "0"
+
+    return (int(Data1.replace("-", ""))) < (int(Data2.replace("-", "")))
 
 # Funciones para creacion de datos
 
