@@ -27,8 +27,12 @@
 
 from DISClib.DataStructures.singlelinkedlist import addLast
 import config as cf
+import time
 from DISClib.ADT import list as lt
+from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as me
+from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 
 """
@@ -38,7 +42,7 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog():
+def newCatalog(tipo):
     """
     Inicializa el catálogo de . Crea dos listas vacias, una para las obras 
     y otro para los artistas
@@ -46,25 +50,25 @@ def newCatalog():
     catalog = {'Artwork': None,
                'Artist': None}
 
-    catalog['Artwork'] = lt.newList()
-    catalog["Artist"] = lt.newList()
+    catalog['Artwork'] = lt.newList(tipo)
+    catalog["Artist"] = lt.newList(tipo)
 
     return catalog
 
 # Funciones para agregar informacion al catalogo
 
-def addArtwork(catalog, artwork):
+def addArtwork(catalog, artwork,tipo):
     """
     Carga solo la informacion necesaria al catalogo
     """
-    new = newArtwork()
+    new = newArtwork(tipo)
 
     for key in new.keys():
         new[key] = artwork[key]
 
     lt.addLast(catalog["Artwork"], new)
 
-def newArtwork():
+def newArtwork(tipo):
     """
     Se crea un diccionario par cada obra
     """
@@ -77,9 +81,10 @@ def newArtwork():
            'Classification': None,
            'Department': None,
            'DateAcquired': None,
+           'URL': None
            }
 
-    new['ConstituentID'] = lt.newList()
+    new['ConstituentID'] = lt.newList(tipo)
 
     return new
 
@@ -96,7 +101,8 @@ def GetArtistas(catalog, inicial, final):
 
 
     for artista in artistas:
-        if (int(artista["BeginDate"]) >= inicial) and (int(artista["BeginDate"]) <= final):
+        Date = int(artista["BeginDate"]) 
+        if (Date >= inicial) and (Date <= final):
             lt.addLast(en_rango, artista)
 
     sa.sort(en_rango, compareBeginDate)
@@ -104,10 +110,53 @@ def GetArtistas(catalog, inicial, final):
     return en_rango
 
 
+def GetArtwork(catalog, inicial, final, size, sort):
+    sub_list = lt.subList(catalog["Artwork"], 1, size)
+    en_rango = lt.newList()
+    obras = lt.iterator(sub_list)
+
+    for obra in obras:
+
+        if obra["DateAcquired"] != "":
+            Date = int(obra["DateAcquired"].replace("-", ""))
+        else:
+            Date = 0
+        
+        if (Date >= inicial) and (Date <= final):
+            lt.addLast(en_rango, obra)
+
+    if sort == "ins":
+        start_time = time.process_time()
+        ins.sort(en_rango, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+
+    elif sort == "sa":
+        start_time = time.process_time()
+        sa.sort(en_rango, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+
+    elif sort == "me":
+        start_time = time.process_time()
+        me.sort(en_rango, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+        
+    elif sort == "qs":
+        start_time = time.process_time()
+        qs.sort(en_rango, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+
+    elapsed_rime_msg = (stop_time - start_time)*1000
+
+    return elapsed_rime_msg, en_rango
+
+
 def compareBeginDate(artist1, artist2):
 
     return (int(artist1["BeginDate"])) < (int(artist2["BeginDate"]))
 
+def cmpArtworkByDateAcquired(Artwork1, Artwork2):
+
+    return (int(Artwork1["DateAcquired"].replace("-", ""))) < (int(Artwork2["DateAcquired"].replace("-", "")))
 
 # Funciones para creacion de datos
 
