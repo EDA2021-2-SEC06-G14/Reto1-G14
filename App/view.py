@@ -27,6 +27,8 @@ from DISClib.ADT import list as lt
 from prettytable import PrettyTable, ALL
 assert cf
 
+default_limit = 10000
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -66,7 +68,7 @@ def seleccionrep():
     if inp == 1:
         tipo = "ARRAY_LIST"
     elif inp == 2:
-        tipo = "LINKED_LIST"
+        tipo = "SINGLE_LINKED"
     else:
         print("No selecciono una opcion valida")
         seleccionrep()
@@ -207,7 +209,7 @@ while True:
         inicial = int(input("Año inicial: "))
         final = int(input("Año final: "))
         print("Se estan obteniendo los artistas...")
-        artistas = controller.GetArtistas(catalog, inicial, final)
+        artistas = controller.GetArtistas(catalog, inicial, final, tipo)
         printartistas(artistas, inicial, final)
         
 
@@ -217,7 +219,7 @@ while True:
         inicial = input("Año inicial: ")
         final = input("Año final: ")
         print("Se estan organizando las adquisiciones cronologicamente...")
-        obras = controller.GetArtwork(catalog, inicial, final, size, sort)
+        obras = controller.GetArtwork(catalog, inicial, final, size, sort, tipo)
         printArtworks(obras[1], inicial, final)
         print("Tiempo de organizacion: " + str(obras[0]) + " msg")
         

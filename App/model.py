@@ -100,9 +100,9 @@ def addArtist(catalog, artist):
 
 
 
-def GetArtistas(catalog, inicial, final):
+def GetArtistas(catalog, inicial, final, tipo):
 
-    en_rango = lt.newList()
+    en_rango = lt.newList(tipo)
     artistas  = lt.iterator(catalog["Artist"])
 
 
@@ -116,9 +116,10 @@ def GetArtistas(catalog, inicial, final):
     return en_rango
 
 
-def GetArtwork(catalog, inicial, final, size, sort):
+def GetArtwork(catalog, inicial, final, size, sort, tipo):
     sub_list = lt.subList(catalog["Artwork"], 1, size)
-    en_rango = lt.newList()
+    sub_list = sub_list.copy()
+    en_rango = lt.newList(tipo)
     obras = lt.iterator(sub_list)
 
     for obra in obras:

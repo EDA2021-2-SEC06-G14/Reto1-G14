@@ -71,19 +71,19 @@ def loadArtistas(catalog, tipo):
 
 # Funciones de ordenamiento
 
-def GetArtistas(catalog, inicial, final):
+def GetArtistas(catalog, inicial, final, tipo):
     """
     Encontrar los artistas en un rango de anos     
     """
-    Artistas = model.GetArtistas(catalog, inicial, final)
+    Artistas = model.GetArtistas(catalog, inicial, final, tipo)
 
     return Artistas
 
-def GetArtwork(catalog, inicial, final, size, sort):
+def GetArtwork(catalog, inicial, final, size, sort, tipo):
     """
     Encontrar obras en rango de acquiredate 
     """
-    Obras = model.GetArtwork(catalog, int(inicial.replace("-", "")), int(final.replace("-", "")), size, sort)
+    Obras = model.GetArtwork(catalog, int(inicial.replace("-", "")), int(final.replace("-", "")), size, sort, tipo)
     return Obras 
 
 # Funciones de consulta sobre el catálogo
