@@ -219,7 +219,7 @@ while True:
         print("Se estan organizando las adquisiciones cronologicamente...")
         obras = controller.GetArtwork(catalog, inicial, final, size, sort)
         printArtworks(obras[1], inicial, final)
-        print("Tiempo de organizacion: " + str(obras[0] + " msg"))
+        print("Tiempo de organizacion: " + str(obras[0]) + " msg")
         
 
     elif int(inputs[0] == 4):
