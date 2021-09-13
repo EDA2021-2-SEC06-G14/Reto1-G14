@@ -86,7 +86,7 @@ def GetArtwork(catalog, inicial, final, size, sort, tipo):
     Obras = model.GetArtwork(catalog, int(inicial.replace("-", "")), int(final.replace("-", "")), size, sort, tipo)
     return Obras 
 
-def buscar_artist(ids,catalog):
-    return model.buscar_artist(ids,catalog)
+def buscar_artist(ids,catalog,tipo):
+    return model.buscar_artist(ids,catalog,tipo)
 
 # Funciones de consulta sobre el catálogo

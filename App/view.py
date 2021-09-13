@@ -161,7 +161,7 @@ def printArtworks(artworks, inicial, final, catalog):
     print("The first and last 3 artists in range are")
     x = PrettyTable()
     
-    x.field_names = (["ObjectID","Title","ConstituentID", "Medium", "Dimensions",
+    x.field_names = (["ObjectID","Title","Autores", "Medium", "Dimensions",
                       "DateAcquired", "URL"])
     x.max_width = 25
     x.hrules=ALL
@@ -170,27 +170,33 @@ def printArtworks(artworks, inicial, final, catalog):
         for i in range(1, 4):
             artwork = lt.getElement(artworks, i)
             
-            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog,tipo),
                     artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                     artwork["URL"]])
 
         for i in range(size-2, size+1):
             artwork = lt.getElement(artworks, i)
-            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog,tipo),
                     artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                     artwork["URL"]])
     
     else:
         for i in range(1,size+1):
             artwork = lt.getElement(artworks, i)
-            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog,tipo),
                         artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                         artwork["URL"]])
 
     print(x)
 
-def buscar_artista(ids,catalog):
-    return controller.buscar_artist(ids,catalog)
+def buscar_artista(ids,catalog,tipo):
+    ed_autores=controller.buscar_artist(ids,catalog,tipo)
+    rta=""
+    for pos in range(0,lt.size(ed_autores)):
+        sum= lt.getElement(ed_autores, pos)
+        rta= rta +"-"+ sum +"-" 
+
+    return rta
 catalog = None
 
 """

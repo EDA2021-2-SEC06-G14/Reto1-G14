@@ -151,17 +151,21 @@ def GetArtwork(catalog, inicial, final, size, sort, tipo):
 
     return elapsed_rime_msg, en_rango
 
-def buscar_artist(ids,catalog):
+def buscar_artist(ids,catalog,tipo):
     #sa.sort(catalog["Artist"], cmpids)
-    nombres= lt.newList("ARRAY_LIST")
+    nombres= lt.newList(tipo)
     artistas  = lt.iterator(catalog["Artist"])
+    byecorchetes = ids.replace("[","")
+    byecorchetedos = byecorchetes.replace("]","")
+    authors = byecorchetedos.split(",")
 
-    for id in ids:
+    for id in authors:
+        comp=int(id)
         for artista in artistas:
             posid = int(artista["ConstituentID"])
             #posauthor = lt.isPresent(nombres, artista["DisplayName"])
             #if posauthor==0:
-            if id==posid:
+            if comp==posid:
                 lt.addLast(nombres, artista["DisplayName"])
         #aut= lt.getElement(catalog["Artist"], binary_search(catalog["Artist"], id))
 
