@@ -150,7 +150,7 @@ def printartistas(artistas, inicial, final):
         
     print(x)
 
-def printArtworks(artworks, inicial, final):
+def printArtworks(artworks, inicial, final, catalog):
 
     size = lt.size(artworks)
 
@@ -170,25 +170,27 @@ def printArtworks(artworks, inicial, final):
         for i in range(1, 4):
             artwork = lt.getElement(artworks, i)
             
-            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
                     artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                     artwork["URL"]])
 
         for i in range(size-2, size+1):
             artwork = lt.getElement(artworks, i)
-            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
                     artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                     artwork["URL"]])
     
     else:
         for i in range(1,size+1):
             artwork = lt.getElement(artworks, i)
-            x.add_row([artwork["ObjectID"], artwork["Title"], artwork["ConstituentID"],
+            x.add_row([artwork["ObjectID"], artwork["Title"], buscar_artista(artwork["ConstituentID"],catalog),
                         artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"], 
                         artwork["URL"]])
 
     print(x)
 
+def buscar_artista(ids,catalog):
+    return controller.buscar_artist(ids,catalog)
 catalog = None
 
 """
@@ -220,7 +222,7 @@ while True:
         final = input("Año final: ")
         print("Se estan organizando las adquisiciones cronologicamente...")
         obras = controller.GetArtwork(catalog, inicial, final, size, sort, tipo)
-        printArtworks(obras[1], inicial, final)
+        printArtworks(obras[1], inicial, final, catalog)
         print("Tiempo de organizacion: " + str(obras[0]) + " msg")
         
 

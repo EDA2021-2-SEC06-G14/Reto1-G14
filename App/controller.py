@@ -53,7 +53,7 @@ def loadObras(catalog, tipo):
     """
     Carga las obras 
     """
-    Artworksfile = cf.data_dir + "MoMA/Artworks-utf8-10pct.csv"
+    Artworksfile = cf.data_dir + "MoMA/Artworks-utf8-small.csv"
     inputfile = csv.DictReader(open(Artworksfile, encoding='utf8'))
     for artwork in inputfile:
         model.addArtwork(catalog, artwork, tipo)
@@ -64,7 +64,7 @@ def loadArtistas(catalog, tipo):
     """
     Carga los artistas
     """
-    Artistfile = cf.data_dir + "MoMA/Artists-utf8-10pct.csv"
+    Artistfile = cf.data_dir + "MoMA/Artists-utf8-small.csv"
     inputfile = csv.DictReader(open(Artistfile, encoding = "utf8"))
     for artist in inputfile:
         model.addArtist(catalog, artist)
@@ -85,5 +85,8 @@ def GetArtwork(catalog, inicial, final, size, sort, tipo):
     """
     Obras = model.GetArtwork(catalog, int(inicial.replace("-", "")), int(final.replace("-", "")), size, sort, tipo)
     return Obras 
+
+def buscar_artist(ids,catalog):
+    return model.buscar_artist(ids,catalog)
 
 # Funciones de consulta sobre el catálogo

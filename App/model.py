@@ -151,6 +151,47 @@ def GetArtwork(catalog, inicial, final, size, sort, tipo):
 
     return elapsed_rime_msg, en_rango
 
+def buscar_artist(ids,catalog):
+    #sa.sort(catalog["Artist"], cmpids)
+    nombres= lt.newList("ARRAY_LIST")
+    artistas  = lt.iterator(catalog["Artist"])
+
+    for id in ids:
+        for artista in artistas:
+            posid = int(artista["ConstituentID"])
+            #posauthor = lt.isPresent(nombres, artista["DisplayName"])
+            #if posauthor==0:
+            if id==posid:
+                lt.addLast(nombres, artista["DisplayName"])
+        #aut= lt.getElement(catalog["Artist"], binary_search(catalog["Artist"], id))
+
+    return nombres
+
+def binary_search(arr, x):
+    # Esta sección de codigo fue inspirada en: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    low = 0
+    high = len(arr) - 1
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+ 
+        # If x is greater, ignore left half
+        elem=lt.getElement(arr, mid)
+        if elem["ConstituentID"] < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif elem["ConstituentID"] > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            return mid
+ 
+    # If we reach here, then the element was not present
+    return -1
 
 def compareBeginDate(artist1, artist2):
 
@@ -159,6 +200,10 @@ def compareBeginDate(artist1, artist2):
 def cmpArtworkByDateAcquired(Artwork1, Artwork2):
 
     return (int(Artwork1["DateAcquired"].replace("-", ""))) < (int(Artwork2["DateAcquired"].replace("-", "")))
+
+def cmpids(id1, id2):
+    return (int(id1["ConstituentID"])<int(id2["ConstituentID"]))
+
 
 # Funciones para creacion de datos
 
