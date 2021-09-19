@@ -22,172 +22,129 @@
  * Contribuciones:
  *
  * Dario Correal - Version inicial
- """
+"""
 
-
-from DISClib.DataStructures.singlelinkedlist import addLast
-import config as cf
-import time
+from DISClib.DataStructures.arraylist import getElement
 from DISClib.ADT import list as lt
-from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import shellsort as sa
-from DISClib.Algorithms.Sorting import mergesort as me
-from DISClib.Algorithms.Sorting import quicksort as qs
+import config as cf
 assert cf
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
 
-# Construccion de modelos
 
-def newCatalog(tipo):
+def newCatalogA():
     """
-    Inicializa el catálogo de . Crea dos listas vacias, una para las obras 
-    y otro para los artistas
+    Inicializa el catálogo de libros. Crea una lista vacia para guardar
+    todos los libros, adicionalmente, crea una lista vacia para los autores,
+    una lista vacia para los generos y una lista vacia para la asociación
+    generos y libros. Retorna el catalogo inicializado.
     """
-    catalog = {'Artwork': None,
-               'Artist': None}
+    catalog = {'Artists': None,
+               'Artworks': None,
+               'Artists_Artworks':None}
 
-    catalog['Artwork'] = lt.newList(tipo)
-    catalog["Artist"] = lt.newList(tipo)
+    catalog['Artists'] = lt.newList('ARRAY_LIST')
+    catalog['Artworks'] = lt.newList('ARRAY_LIST')
+    catalog['Artists_Artworks'] = lt.newList('ARRAY_LIST')
+
 
     return catalog
 
+def newCatalogS():
+    """
+    Inicializa el catálogo de libros. Crea una lista vacia para guardar
+    todos los libros, adicionalmente, crea una lista vacia para los autores,
+    una lista vacia para los generos y una lista vacia para la asociación
+    generos y libros. Retorna el catalogo inicializado.
+    """
+    catalog = {'Artists': None,
+               'Artworks': None,}
+
+    catalog['Artists'] = lt.newList('SINGLE_LINKED')
+    catalog['Artworks'] = lt.newList('SINGLE_LINKED')
+    catalog['Artists_Artworks'] = lt.newList('SINGLE_LINKED')
+
+
+    return catalog
 # Funciones para agregar informacion al catalogo
 
-def addArtwork(catalog, artwork,tipo):
-    """
-    Carga solo la informacion necesaria al catalogo
-    """
-    new = newArtwork(tipo)
-
-    for key in new.keys():
-
-        if key == "DateAcquired" and artwork["DateAcquired"] == "":
-            new[key] = "0"
-
-        else:
-            new[key] = artwork[key]
-
+def addArtists(catalog, artist):
+    # Se adiciona el libro a la lista de libros
+    lt.addLast(catalog['Artists'], artist)
+    # Se obtienen los autores del libro
+    # ID = artist['Constituent ID']
     
-    lt.addLast(catalog["Artwork"], new)
+def addArtists_Artworks(catalog, artist):
+    artista={
+        'ConstituentID':artist['ConstituentID'],
+        'DisplayName':artist['DisplayName'],
+        'ObjectID':"",
+    }
+    lt.addLast(catalog['Artists_Artworks'], artista)
 
-def newArtwork(tipo):
-    """
-    Se crea un diccionario par cada obra
-    """
-    new = {'ObjectID' : None,
-           'Title' : None,
-           'ConstituentID': None,
-           'Medium': None,
-           'Dimensions': None,
-           'CreditLine': None,
-           'Classification': None,
-           'Department': None,
-           'DateAcquired': None,
-           'URL': None
-           }
-
-    new['ConstituentID'] = lt.newList(tipo)
-
-    return new
-
-def addArtist(catalog, artist):
-
-    lt.addLast(catalog["Artist"], artist)
-
-
-
-def GetArtistas(catalog, inicial, final, tipo):
-
-    en_rango = lt.newList(tipo)
-    artistas  = lt.iterator(catalog["Artist"])
-
-
-    for artista in artistas:
-        Date = int(artista["BeginDate"]) 
-        if (Date >= inicial) and (Date <= final):
-            lt.addLast(en_rango, artista)
-
-    sa.sort(en_rango, compareBeginDate)
-
-    return en_rango
-
-
-def GetArtwork(catalog, inicial, final, size, sort, tipo):
-    sub_list = lt.subList(catalog["Artwork"], 1, size)
-    sub_list = sub_list.copy()
-    en_rango = lt.newList(tipo)
-    obras = lt.iterator(sub_list)
-
-    for obra in obras:
-        Date = int(obra["DateAcquired"].replace("-", ""))
-        if (Date >= inicial) and (Date <= final):
-            lt.addLast(en_rango, obra)
-
-    if sort == "ins":
-        start_time = time.process_time()
-        ins.sort(en_rango, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-
-    elif sort == "sa":
-        start_time = time.process_time()
-        sa.sort(en_rango, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-
-    elif sort == "me":
-        start_time = time.process_time()
-        me.sort(en_rango, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-        
-    elif sort == "qs":
-        start_time = time.process_time()
-        qs.sort(en_rango, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-
-    elapsed_rime_msg = (stop_time - start_time)*1000
-
-    return elapsed_rime_msg, en_rango
-
-def buscar_artist(ids,catalog,tipo):
-    #sa.sort(catalog["Artist"], cmpids)
-    nombres= lt.newList(tipo)
-    artistas  = lt.iterator(catalog["Artist"])
-    byecorchetes = ids.replace("[","")
+#CODIGO DONDE SE AGREGAN LOS OBJETOS A LOS AUTORES!!
+def addObject(catalog,work):
+    p = work["ConstituentID"]
+    byecorchetes = p.replace("[","")
     byecorchetedos = byecorchetes.replace("]","")
     authors = byecorchetedos.split(",")
+    for i in authors:
+        index = binary_search(catalog['Artists_Artworks'],int(i))
+        ele = lt.getElement(catalog['Artists_Artworks'], index)
+        viejos = ele["ObjectID"]
+        if (viejos == None) or (viejos == ''):
+            nuevo = work["ObjectID"]
+        else:
+         nuevo = viejos+","+work["ObjectID"]
+        i_insert={
+            'ConstituentID':ele['ConstituentID'],
+            'DisplayName':ele['DisplayName'],
+            'ObjectID':nuevo,
+        }
+        lt.changeInfo(catalog['Artists_Artworks'], index, i_insert)
+    
 
-    for id in authors:
-        comp=int(id)
-        for artista in artistas:
-            posid = int(artista["ConstituentID"])
-            #posauthor = lt.isPresent(nombres, artista["DisplayName"])
-            #if posauthor==0:
-            if comp==posid:
-                lt.addLast(nombres, artista["DisplayName"])
-        #aut= lt.getElement(catalog["Artist"], binary_search(catalog["Artist"], id))
+def sortAux(catalog):
+    ordenado = sa.sort(catalog['Artists_Artworks'],cmpFunctionIndice)
+    return ordenado
 
-    return nombres
+def addArtworks(catalog, artwork):
+    # Se adiciona el libro a la lista de libros
+    obra = {
+        'ObjectID':artwork['ObjectID'],
+        'ConstituentID':artwork['ConstituentID'],
+        'Title':artwork['Title'],
+        'Medium':artwork['Medium'],
+        'Dimensions':artwork['Dimensions'],
+        'CreditLine':artwork['CreditLine'],
+        'DateAcquired':artwork['DateAcquired'],
+        'Department':artwork['Department'],
+        'URL':artwork['URL'],
+        'Height (cm)':artwork['Height (cm)'],
+        'Length (cm)':artwork['Length (cm)'],
+        'Weight (kg)':artwork['Weight (kg)'],
+        'Width (cm)':artwork['Width (cm)'],
+        'Classification':artwork['Classification']
+    }
+    lt.addLast(catalog['Artworks'], obra)
 
 def binary_search(arr, x):
-    # Esta sección de codigo fue inspirada en: https://www.geeksforgeeks.org/python-program-for-binary-search/
     low = 0
-    high = len(arr) - 1
+    high = lt.size(arr) - 1
     mid = 0
  
     while low <= high:
  
         mid = (high + low) // 2
+        comp= lt.getElement(arr,mid)
+        ahorasi=int(comp["ConstituentID"])
  
         # If x is greater, ignore left half
-        elem=lt.getElement(arr, mid)
-        if elem["ConstituentID"] < x:
+        if ahorasi < x:
             low = mid + 1
  
         # If x is smaller, ignore right half
-        elif elem["ConstituentID"] > x:
+        elif ahorasi > x:
             high = mid - 1
  
         # means x is present at mid
@@ -197,22 +154,315 @@ def binary_search(arr, x):
     # If we reach here, then the element was not present
     return -1
 
-def compareBeginDate(artist1, artist2):
+    # Se obtienen los autores del libro
+    # ID = artist['Constituent ID']
+def funcionReqUno(catalog,minimo,maximo):
+    ordenado = sa.sort(catalog['Artists'],cmpFunctionRuno)
+    indexmin = binary_search_min(ordenado, int(minimo))
+    indexmax = binary_search_max(ordenado, int(maximo))
+    cant= indexmax-indexmin
+    la_lista = lt.subList(ordenado, indexmin,cant)
+    return la_lista
 
-    return (int(artist1["BeginDate"])) < (int(artist2["BeginDate"]))
 
-def cmpArtworkByDateAcquired(Artwork1, Artwork2):
+def binary_search_max(arr, x):
+    """
+    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    """
+    low = 0
+    high = lt.size(arr) - 1
+    mid = 0
+    rta=0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+ 
+        # If x is greater, ignore left half
+        if int(ele["BeginDate"]) > x:
+            high = mid - 1
+ 
+        # If x is smaller, ignore right half
+        elif int(ele["BeginDate"]) == x:
+            rta=mid
+            low = mid + 1
+        else:
+            low = mid + 1
+    if rta == 0:
+        rta= mid+2
+    return rta
 
-    return (int(Artwork1["DateAcquired"].replace("-", ""))) < (int(Artwork2["DateAcquired"].replace("-", "")))
+def binary_search_min(arr, x):
+    """
+    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    """
+    low = 0
+    high = lt.size(arr) - 1
+    mid = 0
+    rta=0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+ 
+        # If x is greater, ignore left half
+        if int(ele["BeginDate"]) > x:
+            high = mid - 1
+ 
+        # If x is smaller, ignore right half
+        elif int(ele["BeginDate"]) == x:
+            rta=mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    if rta == 0:
+        rta=mid
+    return rta
 
-def cmpids(id1, id2):
-    return (int(id1["ConstituentID"])<int(id2["ConstituentID"]))
+def funcionReqDos(catalog, minimo, maximo):
+    mini= minimo[0:4]+minimo[5:7]+minimo[8:10]
+    maxi= maximo[0:4]+maximo[5:7]+maximo[8:10]
+    mini = int(mini)
+    maxi = int(maxi)
+    ordenado = sa.sort(catalog['Artworks'],cmpFunctionRdos)
+    indexmin = binary_search_min2(ordenado, int(mini))
+    indexmax = binary_search_max2(ordenado, int(maxi))
+    cant= indexmax-indexmin
+    la_lista = lt.subList(ordenado, indexmin,cant)
+    la_rta= lt.newList("ARRAY_LIST")
+    for n in range(1,lt.size(la_lista)+1):
+        elemento= lt.getElement(la_lista,n)
+        buscar= elemento["ConstituentID"]
+        byecorchetes = buscar.replace("[","")
+        byecorchetedos = byecorchetes.replace("]","")
+        authors = byecorchetedos.split(",")
+        autores=""
+        for x in authors:
+            index = binary_search(catalog['Artists_Artworks'],int(x))
+            ele = lt.getElement(catalog['Artists_Artworks'], index)
+            autores = autores +"-"+ ele['DisplayName'] + "-"
+        agregar = {
+            'ObjectID':elemento['ObjectID'],
+            'Title':elemento['Title'],
+            'Artists':autores,
+            'Medium':elemento['Medium'],
+            'Dimensions':elemento['Dimensions'],
+            'DateAcquired':elemento['DateAcquired'],
+            'URL':elemento['URL']
+        }
+        lt.addLast(la_rta,agregar)
+    return la_rta
+
+def funcionReqTres(catalog, nombre):
+    index = normal_search_nombre(catalog['Artists_Artworks'],nombre)
+    if index != (-1):
+        autor = lt.getElement(catalog['Artists_Artworks'],index)
+        objetos = autor["ObjectID"]
+        if (objetos==None) or (objetos==''):
+            vacio = "NOHAYOBRAS"
+            tupla = vacio,vacio
+            return tupla
+        else:
+            lt_objetos = objetos.split(",")
+            ordenado = sa.sort(catalog["Artworks"], cmpobjectid)
+            tad_objetos = lt.newList("ARRAY_LIST")
+            tad_medios = lt.newList("ARRAY_LIST",cmpfunction=comparemedio)
+            for i in lt_objetos:
+                index = binary_search_id(ordenado, i)
+                elemento = lt.getElement(ordenado, index)
+                agregar = {
+                    'ObjectID':elemento['ObjectID'],
+                    'Title':elemento['Title'],
+                    'Medium':elemento['Medium'],
+                    'Dimensions':elemento['Dimensions'],
+                    'DateAcquired':elemento['DateAcquired'],
+                    'Department':elemento['Department'],
+                    'Classification':elemento['Classification'],
+                    'URL':elemento['URL'],
+                    'ConstituentID':elemento['ConstituentID']
+                }
+                lt.addLast(tad_objetos, agregar)
+                cambiarTADmedios(tad_medios,elemento['Medium'])
+            sa.sort(tad_medios,cmpcount)
+            mediorep = lt.getElement(tad_medios, 1)
+            rtafinal= lt.newList("ARRAY_LIST")
+            objetos  = lt.iterator(tad_objetos)
+            for objeto in objetos:
+                name = objeto["Medium"]
+                if (name == mediorep["Medium"]):
+                    lt.addLast(rtafinal, objeto)
+            tuplarta= tad_medios,rtafinal
+            return tuplarta
+            
+    else:
+        vacio = "NOHAYAUTOR"
+        tupla = vacio,vacio
+        return tupla
 
 
-# Funciones para creacion de datos
 
-# Funciones de consulta
+def cambiarTADmedios(arr, x):
+    pos = lt.isPresent(arr,x)
+    if pos!=0:
+        o = lt.getElement(arr,pos)
+        coso= int(o["Count"])
+        cambio= coso + 1
+        cambiodict = {
+            'Medium': o["Medium"],
+            'Count': cambio
+        }
+        lt.changeInfo(arr,pos,cambiodict)
+    else:
+        nuevodict={
+            'Medium': x,
+            'Count': "1"
+        }
+        lt.addLast(arr,nuevodict)
 
-# Funciones utilizadas para comparar elementos dentro de una lista
+def comparemedio(medio, medios):
+    if (medio.lower() in medios['name'].lower()):
+        return 0
+    return -1
+        
 
-# Funciones de ordenamiento
+def normal_search_nombre(arr, x):
+    largo  = lt.size(arr)
+    for artist in range(1,largo+1):
+        artista = lt.getElement(arr,artist)
+        name = artista["DisplayName"]
+        if (name == x):
+            return artist
+    return -1
+
+def binary_search_max2(arr, x):
+    """
+    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    """
+    low = 0
+    high = lt.size(arr) - 1
+    mid = 0
+    rta=0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+        e = ele["DateAcquired"]
+        if (e!=None) and (e!=""):
+            m= e[0:4]+e[5:7]+e[8:10]
+            m= int(m)
+        else:
+            m=0
+ 
+        # If x is greater, ignore left half
+        if int(m) > x:
+            high = mid - 1
+ 
+        # If x is smaller, ignore right half
+        elif int(m) == x:
+            rta=mid
+            low = mid + 1
+        else:
+            low = mid + 1
+    if rta == 0:
+        rta= mid+2
+    return rta
+
+def binary_search_min2(arr, x):
+    """
+    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    """
+    low = 0
+    high = lt.size(arr) - 1
+    mid = 0
+    rta=0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+        e = ele["DateAcquired"]
+        if (e!=None) and (e!=""):
+            m= e[0:4]+e[5:7]+e[8:10]
+            m= int(m)
+        else:
+            m=0
+ 
+        # If x is greater, ignore left half
+        if int(m) > x:
+            high = mid - 1
+ 
+        # If x is smaller, ignore right half
+        elif int(m) == x:
+            rta=mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    if rta == 0:
+        rta= mid+2
+    return rta
+
+def binary_search_id(arr, x):
+    low = 0
+    high = lt.size(arr) - 1
+    mid = 0
+    xdepurado = x.replace("'","")
+    xdep = xdepurado.replace(" ","")
+    xint = int(xdep)
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+        comp= lt.getElement(arr,mid)
+        ahorasi=int(comp["ObjectID"])
+ 
+        # If x is greater, ignore left half
+        if ahorasi < xint:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif ahorasi > xint:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            return mid
+ 
+    # If we reach here, then the element was not present
+    return -1
+
+
+
+
+def cmpFunctionRuno(anouno, anodos):
+    return (int(anouno["BeginDate"]) < int(anodos["BeginDate"]))
+
+def cmpobjectid(iduno, iddos):
+    return (int(iduno["ObjectID"]) < int(iddos["ObjectID"]))
+
+def cmpFunctionIndice(artist1, artist2):
+    return (int(artist1["ConstituentID"]) < int(artist2["ConstituentID"]))
+
+def cmpcount(countuno, countdos):
+    return (int(countuno["Count"])> int(countdos["Count"]))
+
+def cmpFunctionRdos(feuno, fedos):
+    fechauno= feuno["DateAcquired"]
+    fechados = fedos["DateAcquired"]
+    if (fechauno!=None) and (fechauno!=""):
+        mini= fechauno[0:4]+fechauno[5:7]+fechauno[8:10]
+        mini= int(mini)
+    else:
+        mini=0
+    if (fechados!=None) and (fechados!=""):
+        maxi= fechados[0:4]+fechados[5:7]+fechados[8:10]
+        maxi= int(maxi)
+    else:
+        maxi=0
+    return (int(mini) < int(maxi))
