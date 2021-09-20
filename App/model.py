@@ -324,7 +324,7 @@ def cambiarTADmedios(arr, x):
         lt.addLast(arr,nuevodict)
 
 def comparemedio(medio, medios):
-    if (medio.lower() in medios['name'].lower()):
+    if (medio.lower() in medios['Medium'].lower()):
         return 0
     return -1
         
