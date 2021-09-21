@@ -25,7 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as sa
 from time import process_time
 from prettytable import PrettyTable, ALL
 
@@ -58,11 +58,6 @@ def initCatalogA():
     """
     return controller.initCatalogA()
 
-def initCatalogS():
-    """
-    Inicializa el catalogo de libros
-    """
-    return controller.initCatalogS()
 
 def loadData(catalog):
     """
@@ -199,18 +194,10 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        printMenuED()
-        ed = input(print("Cual desea escojer:\n"))
-        if int(ed)==1:
-            catalog = initCatalogA()
-            t1 = process_time()
-            loadData(catalog)
-            t2 = process_time()
-        elif int(ed)==2:
-            catalog = initCatalogS()
-            t1 = process_time()
-            loadData(catalog)
-            t2 = process_time()
+        catalog = initCatalogA()
+        t1 = process_time()
+        loadData(catalog)
+        t2 = process_time()
         print("Cargando información de los archivos ....")
         
         print('Artistas cargados: ' + str(lt.size(catalog['Artists'])))
@@ -225,8 +212,8 @@ while True:
             obra = lt.getElement(obras, lt.size(catalog['Artworks'])-cont)
             print(obra)
         otra = catalog['Artists_Artworks']
-        for cont in range(1, 4):
-            obra = lt.getElement(otra, lt.size(catalog['Artists_Artworks'])-cont)
+        for cont in range(1, 10):
+            obra = lt.getElement(otra, cont)
             print(obra)
 
 

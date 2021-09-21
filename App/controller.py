@@ -36,12 +36,6 @@ def initCatalogA():
     catalog = model.newCatalogA()
     return catalog
 
-def initCatalogS():
-    """
-    Llama la funcion de inicializacion del catalogo del modelo.
-    """
-    catalog = model.newCatalogS()
-    return catalog
 
 # Funciones para la carga de datos
 
@@ -61,19 +55,19 @@ def loadArtists(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-large.csv'
+    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtists(catalog, artist)
         model.addArtists_Artworks(catalog, artist)
-    catalog['Artists_Artworks']=model.sortAux(catalog)
+    catalog['Artists_Artworks']=model.sortAux(catalog['Artists_Artworks'])
 
 
 def loadArtworks(catalog):
     """
     Carga todos los tags del archivo y los agrega a la lista de tags
     """
-    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-large.csv'
+    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for work in input_file:
         model.addArtworks(catalog, work)
@@ -88,11 +82,3 @@ def funcionReqDos(catalog, minimo, maximo):
     
 def funcionReqTres(catalog, nombre):
     return model.funcionReqTres(catalog, nombre)
-
-# Inicialización del Catálogo de libros
-
-# Funciones para la carga de datos
-
-# Funciones de ordenamiento
-
-# Funciones de consulta sobre el catálogo

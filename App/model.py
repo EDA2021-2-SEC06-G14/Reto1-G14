@@ -26,7 +26,7 @@
 
 from DISClib.DataStructures.arraylist import getElement
 from DISClib.ADT import list as lt
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as sa
 import config as cf
 assert cf
 
@@ -49,23 +49,6 @@ def newCatalogA():
 
 
     return catalog
-
-def newCatalogS():
-    """
-    Inicializa el catálogo de libros. Crea una lista vacia para guardar
-    todos los libros, adicionalmente, crea una lista vacia para los autores,
-    una lista vacia para los generos y una lista vacia para la asociación
-    generos y libros. Retorna el catalogo inicializado.
-    """
-    catalog = {'Artists': None,
-               'Artworks': None,}
-
-    catalog['Artists'] = lt.newList('SINGLE_LINKED')
-    catalog['Artworks'] = lt.newList('SINGLE_LINKED')
-    catalog['Artists_Artworks'] = lt.newList('SINGLE_LINKED')
-
-
-    return catalog
 # Funciones para agregar informacion al catalogo
 
 def addArtists(catalog, artist):
@@ -73,7 +56,28 @@ def addArtists(catalog, artist):
     lt.addLast(catalog['Artists'], artist)
     # Se obtienen los autores del libro
     # ID = artist['Constituent ID']
-    
+
+
+def addArtworks(catalog, artwork):
+    # Se adiciona el libro a la lista de libros
+    obra = {
+        'ObjectID':artwork['ObjectID'],
+        'ConstituentID':artwork['ConstituentID'],
+        'Title':artwork['Title'],
+        'Medium':artwork['Medium'],
+        'Dimensions':artwork['Dimensions'],
+        'CreditLine':artwork['CreditLine'],
+        'DateAcquired':artwork['DateAcquired'],
+        'Department':artwork['Department'],
+        'URL':artwork['URL'],
+        'Height (cm)':artwork['Height (cm)'],
+        'Length (cm)':artwork['Length (cm)'],
+        'Weight (kg)':artwork['Weight (kg)'],
+        'Width (cm)':artwork['Width (cm)'],
+        'Classification':artwork['Classification']
+    }
+    lt.addLast(catalog['Artworks'], obra)
+
 def addArtists_Artworks(catalog, artist):
     artista={
         'ConstituentID':artist['ConstituentID'],
@@ -95,7 +99,7 @@ def addObject(catalog,work):
         if (viejos == None) or (viejos == ''):
             nuevo = work["ObjectID"]
         else:
-         nuevo = viejos+","+work["ObjectID"]
+            nuevo = viejos+","+work["ObjectID"]
         i_insert={
             'ConstituentID':ele['ConstituentID'],
             'DisplayName':ele['DisplayName'],
@@ -105,28 +109,8 @@ def addObject(catalog,work):
     
 
 def sortAux(catalog):
-    ordenado = sa.sort(catalog['Artists_Artworks'],cmpFunctionIndice)
+    ordenado = sa.sort(catalog,cmpFunctionIndice)
     return ordenado
-
-def addArtworks(catalog, artwork):
-    # Se adiciona el libro a la lista de libros
-    obra = {
-        'ObjectID':artwork['ObjectID'],
-        'ConstituentID':artwork['ConstituentID'],
-        'Title':artwork['Title'],
-        'Medium':artwork['Medium'],
-        'Dimensions':artwork['Dimensions'],
-        'CreditLine':artwork['CreditLine'],
-        'DateAcquired':artwork['DateAcquired'],
-        'Department':artwork['Department'],
-        'URL':artwork['URL'],
-        'Height (cm)':artwork['Height (cm)'],
-        'Length (cm)':artwork['Length (cm)'],
-        'Weight (kg)':artwork['Weight (kg)'],
-        'Width (cm)':artwork['Width (cm)'],
-        'Classification':artwork['Classification']
-    }
-    lt.addLast(catalog['Artworks'], obra)
 
 def binary_search(arr, x):
     low = 0
@@ -161,67 +145,125 @@ def funcionReqUno(catalog,minimo,maximo):
     indexmin = binary_search_min(ordenado, int(minimo))
     indexmax = binary_search_max(ordenado, int(maximo))
     cant= indexmax-indexmin
-    la_lista = lt.subList(ordenado, indexmin,cant)
+    la_lista = lt.subList(ordenado, indexmin,cant+1)
     return la_lista
 
+def binary_search_min(arr, x):
+    low = 0
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+        ele=lt.getElement(arr, mid)
+        begin=int(ele["BeginDate"])
+ 
+        # If x is greater, ignore left half
+        if begin < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif begin > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            while begin==x:
+                mid=mid-1
+                ele=lt.getElement(arr, mid)
+                begin=int(ele["BeginDate"])
+            return mid+1
+ 
+    # If we reach here, then the element was not present
+    return -1
 
 def binary_search_max(arr, x):
-    """
-    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
-    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
-    """
     low = 0
-    high = lt.size(arr) - 1
+    high = lt.size(arr)
     mid = 0
-    rta=0
  
     while low <= high:
  
-        mid = int((high - low) / 2 + low)
+        mid = (high + low) // 2
         ele=lt.getElement(arr, mid)
+        begin=int(ele["BeginDate"])
  
         # If x is greater, ignore left half
-        if int(ele["BeginDate"]) > x:
-            high = mid - 1
+        if begin < x:
+            low = mid + 1
  
         # If x is smaller, ignore right half
-        elif int(ele["BeginDate"]) == x:
-            rta=mid
-            low = mid + 1
+        elif begin > x:
+            high = mid - 1
+ 
+        # means x is present at mid
         else:
-            low = mid + 1
-    if rta == 0:
-        rta= mid+2
-    return rta
+            while begin==x:
+                mid=mid+1
+                ele=lt.getElement(arr, mid)
+                begin=int(ele["BeginDate"])
+            return mid-1
+ 
+    # If we reach here, then the element was not present
+    return -1
+#def binary_search_max(arr, x):
+    #"""
+    #CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    #https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    #"""
+    #low = 0
+    #high = lt.size(arr) - 1
+    #mid = 0
+    #rta=0
+ 
+    #while low <= high:
+ 
+        #mid = int((high - low) / 2 + low)
+        #ele=lt.getElement(arr, mid)
+ 
+        # If x is greater, ignore left half
+        #if int(ele["BeginDate"]) > x:
+            #high = mid - 1
+ 
+        # If x is smaller, ignore right half
+        #elif int(ele["BeginDate"]) == x:
+            #rta=mid
+            #low = mid + 1
+        #else:
+            #low = mid + 1
+    #if rta == 0:
+        #rta= mid+2
+    #return rta
 
-def binary_search_min(arr, x):
-    """
-    CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
-    https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
-    """
-    low = 0
-    high = lt.size(arr) - 1
-    mid = 0
-    rta=0
+#def binary_search_min(arr, x):
+    #"""
+    #CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
+    #https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
+    #"""
+    #low = 0
+    #high = lt.size(arr) - 1
+    #mid = 0
+    #rta=0
  
-    while low <= high:
+    #while low <= high:
  
-        mid = int((high - low) / 2 + low)
-        ele=lt.getElement(arr, mid)
+        #mid = int((high - low) / 2 + low)
+        #ele=lt.getElement(arr, mid)
  
         # If x is greater, ignore left half
-        if int(ele["BeginDate"]) > x:
-            high = mid - 1
+        #if int(ele["BeginDate"]) > x:
+            #high = mid - 1
  
         # If x is smaller, ignore right half
-        elif int(ele["BeginDate"]) == x:
-            rta=mid
-            high = mid - 1
-        else:
-            low = mid + 1
-    if rta == 0:
-        rta=mid
-    return rta
+        #elif int(ele["BeginDate"]) == x:
+            #rta=mid
+            #high = mid - 1
+        #else:
+            #low = mid + 1
+    #if rta == 0:
+        #rta=mid
+    #return rta
 
 def funcionReqDos(catalog, minimo, maximo):
     mini= minimo[0:4]+minimo[5:7]+minimo[8:10]
@@ -232,7 +274,7 @@ def funcionReqDos(catalog, minimo, maximo):
     indexmin = binary_search_min2(ordenado, int(mini))
     indexmax = binary_search_max2(ordenado, int(maxi))
     cant= indexmax-indexmin
-    la_lista = lt.subList(ordenado, indexmin,cant)
+    la_lista = lt.subList(ordenado, indexmin,cant+1)
     la_rta= lt.newList("ARRAY_LIST")
     for n in range(1,lt.size(la_lista)+1):
         elemento= lt.getElement(la_lista,n)
@@ -270,7 +312,7 @@ def funcionReqTres(catalog, nombre):
             lt_objetos = objetos.split(",")
             ordenado = sa.sort(catalog["Artworks"], cmpobjectid)
             tad_objetos = lt.newList("ARRAY_LIST")
-            tad_medios = lt.newList("ARRAY_LIST",cmpfunction=comparemedio)
+            tad_medios = lt.newList("ARRAY_LIST")
             for i in lt_objetos:
                 index = binary_search_id(ordenado, i)
                 elemento = lt.getElement(ordenado, index)
@@ -286,12 +328,13 @@ def funcionReqTres(catalog, nombre):
                     'ConstituentID':elemento['ConstituentID']
                 }
                 lt.addLast(tad_objetos, agregar)
-                cambiarTADmedios(tad_medios,elemento['Medium'])
+                cambiarTADmedios(tad_medios,elemento)
             sa.sort(tad_medios,cmpcount)
             mediorep = lt.getElement(tad_medios, 1)
             rtafinal= lt.newList("ARRAY_LIST")
-            objetos  = lt.iterator(tad_objetos)
-            for objeto in objetos:
+            objetos  = lt.size(tad_objetos)
+            for ob in range(1,objetos+1):
+                objeto=lt.getElement(tad_objetos,ob)
                 name = objeto["Medium"]
                 if (name == mediorep["Medium"]):
                     lt.addLast(rtafinal, objeto)
@@ -306,27 +349,33 @@ def funcionReqTres(catalog, nombre):
 
 
 def cambiarTADmedios(arr, x):
-    pos = lt.isPresent(arr,x)
-    if pos!=0:
+    pos=0
+    final=lt.size(arr)
+    for i in range(1,final+1):
+        cosa=lt.getElement(arr,i)
+        medio= cosa["Medium"]
+        if medio==x["Medium"]:
+            pos=i
+    if pos>0:
         o = lt.getElement(arr,pos)
         coso= int(o["Count"])
         cambio= coso + 1
         cambiodict = {
             'Medium': o["Medium"],
-            'Count': cambio
+            'Count': str(cambio)
         }
         lt.changeInfo(arr,pos,cambiodict)
     else:
         nuevodict={
-            'Medium': x,
+            'Medium': x["Medium"],
             'Count': "1"
         }
         lt.addLast(arr,nuevodict)
 
-def comparemedio(medio, medios):
-    if (medio.lower() in medios['Medium'].lower()):
-        return 0
-    return -1
+#def comparemedio(medio, medios):
+    #if (medio['Medium'].lower() == medios['Medium'].lower()):
+        #return 0
+    #return -1
         
 
 def normal_search_nombre(arr, x):
@@ -410,7 +459,7 @@ def binary_search_min2(arr, x):
 
 def binary_search_id(arr, x):
     low = 0
-    high = lt.size(arr) - 1
+    high = lt.size(arr)
     mid = 0
     xdepurado = x.replace("'","")
     xdep = xdepurado.replace(" ","")
