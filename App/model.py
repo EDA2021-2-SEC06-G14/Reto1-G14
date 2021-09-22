@@ -62,6 +62,9 @@ def addArtists(catalog, artist):
 def addArtworks(catalog, artwork):
     # Se adiciona el libro a la lista de libros
 
+    if artwork["Date"] == "":
+        artwork["Date"] = "0"
+
     obra = {
         'ObjectID':artwork['ObjectID'],
         'ConstituentID':artwork['ConstituentID'],
@@ -377,7 +380,7 @@ def funcionReqCin(catalog, nombre):
     cant+=1
     antiguas = lt.newList("ARRAY_LIST")
     costosas = lt.newList("ARRAY_LIST")
-    for i in range(indexmin,indexmax):
+    for i in range(indexmin,indexmax+1):
         costototal=0.0
         ele = lt.getElement(ordenado,i)
         costopeso=0

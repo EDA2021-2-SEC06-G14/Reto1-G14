@@ -216,11 +216,11 @@ def funcionReqCuatro(catalog):
     y.hrules=ALL
 
     top10 = top["obras"]
-    size = lt.size(top10)
+    size = lt.size(unicas)
 
     if size >= 6:
         for i in range(1, 4):
-            artwork = lt.getElement(top10, i)
+            artwork = lt.getElement(unicas, i)
             y.add_row([artwork["ObjectID"], artwork["Title"], 
                         artwork["ConstituentID"],
                         artwork["Medium"], artwork["Date"],
@@ -228,7 +228,7 @@ def funcionReqCuatro(catalog):
                         artwork["URL"]])
 
         for i in range(size-3, size):
-            artwork = lt.getElement(top10, i)
+            artwork = lt.getElement(unicas, i)
             y.add_row([artwork["ObjectID"], artwork["Title"], 
                         artwork["ConstituentID"],
                         artwork["Medium"], artwork["Date"],
@@ -237,7 +237,7 @@ def funcionReqCuatro(catalog):
         
     else:
         for i in range(1,size):
-            artwork = lt.getElement(top10, i)
+            artwork = lt.getElement(unicas, i)
             y.add_row([artwork["ObjectID"], artwork["Title"], 
                         artwork["ConstituentID"],
                         artwork["Medium"], artwork["Date"],
@@ -346,7 +346,7 @@ while True:
     elif int(inputs[0]) == 5:
         funcionReqCuatro(catalog)
     elif int(inputs[0]) == 6:
-        nombre=input(print("Departamento:\n"))
+        nombre=input("Departamento:\n")
         funcionReqCin(catalog, nombre)
     else:
         sys.exit(0)
