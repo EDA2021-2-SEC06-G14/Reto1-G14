@@ -94,3 +94,6 @@ def funcionReqCin(catalog, nombre):
 
 def obrasUnicas(top):
     return model.obrasUnicas(top) 
+
+def purchased(lista_f):
+    return model.purchased(lista_f)

@@ -96,11 +96,14 @@ def funcionReqUno(catalog, minimo, maximo):
 
 def funcionReqDos(catalog, minimo, maximo):
     lista_f = controller.funcionReqDos(catalog, minimo, maximo)
+    pur =  controller.purchased(lista_f)
+
     size = lt.size(lista_f)
     print("============= Req No. 2 Inputs =============")
     print("Artworks acquired betweem " + str(minimo) + " and " + str(maximo) + "\n")
     print("============= Req No. 2 Answer =============")
     print("There MoMA acquired " + str(size) + " unique pieces between " + str(minimo) + " and " + str(maximo) + "\n")
+    print(str(pur) + " were purhcased \n")
     print("The first and last 3 artists in range are")
     x = PrettyTable()
     
@@ -313,43 +316,48 @@ while True:
         t1 = process_time()
         loadData(catalog)
         t2 = process_time()
-        print("Cargando información de los archivos ....")
+        print("Cargando información de los archivos ....\n")
         
-        print('Artistas cargados: ' + str(lt.size(catalog['Artists'])))
-        print('Obras cargadas: ' + str(lt.size(catalog['Artworks'])))
-        print("Time = " + str(t2 - t1) + "seg")
-        artistas = catalog['Artists']
-        for cont in range(1, 4):
-            artista = lt.getElement(artistas, lt.size(catalog['Artists'])-cont)
-            print(artista)
-        obras = catalog['Artworks']
-        for cont in range(1, 4):
-            obra = lt.getElement(obras, lt.size(catalog['Artworks'])-cont)
-            print(obra)
-        otra = catalog['Artists_Artworks']
-        for cont in range(1, 10):
-            obra = lt.getElement(otra, cont)
-            print(obra)
-        work = catalog['Nationality_Artworks']
-        for cont in range(1, 4):
-            ab = lt.getElement(work, cont)
+        print('Artistas cargados: ' + str(lt.size(catalog['Artists'])) + "\n")
+        print('Obras cargadas: ' + str(lt.size(catalog['Artworks']))+"\n")
+        print("Time = " + str(t2 - t1) + "seg \n")
     
     elif int(inputs[0]) == 2:
         minimo=input("Año Inicial:\n")
         maximo=input("Año Final:\n")
+        t1 = process_time()
         funcionReqUno(catalog, minimo, maximo)
+        t2 = process_time()
+        print("Time = " + str(t2 - t1) + "seg \n")
+
     elif int(inputs[0]) == 3:
         minimo=input("Fecha Inicial:\n")
         maximo=input("Fecha Final:\n")
+        t1 = process_time()
         funcionReqDos(catalog, minimo, maximo)
+        t2 = process_time()
+        print("Time = " + str(t2 - t1) + "seg \n")
+
     elif int(inputs[0]) == 4:
         nombre=input("Nombre:\n")
+        t1 = process_time()
         funcionReqTres(catalog, nombre)
+        t2 = process_time()
+        print("Time = " + str(t2 - t1) + "seg \n")
+
     elif int(inputs[0]) == 5:
+        t1 = process_time()
         funcionReqCuatro(catalog)
+        t2 = process_time()
+        print("Time = " + str(t2 - t1) + "seg \n")
+
     elif int(inputs[0]) == 6:
         nombre=input("Departamento:\n")
+        t1 = process_time()
         funcionReqCin(catalog, nombre)
+        t2 = process_time()
+        print("Time = " + str(t2 - t1) + "seg \n")
+
     else:
         sys.exit(0)
 sys.exit(0)

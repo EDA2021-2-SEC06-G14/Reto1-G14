@@ -261,7 +261,7 @@ def funcionReqDos(catalog, minimo, maximo):
     mini = int(mini)
     maxi = int(maxi)
     ordenado = sa.sort(catalog['Artworks'],cmpFunctionRdos)
-    indexmin = binary_search_min2(ordenado, int(mini))
+    indexmin = binary_search_min2(ordenado, int(mini))+1
     indexmax = binary_search_max2(ordenado, int(maxi))
     cant= indexmax-indexmin
     la_lista = lt.subList(ordenado, indexmin,cant+1)
@@ -283,6 +283,7 @@ def funcionReqDos(catalog, minimo, maximo):
             'Artists':autores,
             'Medium':elemento['Medium'],
             'Dimensions':elemento['Dimensions'],
+            'CreditLine':elemento['CreditLine'],
             'DateAcquired':elemento['DateAcquired'],
             'URL':elemento['URL']
         }
@@ -646,6 +647,16 @@ def obrasUnicas(top):
             lt.addLast(new, b)
     return new
 
+def purchased(lista_f):
+    
+    cont = 0
+    
+    for i in range(1, lt.size(lista_f)+1):
+        a = lt.getElement(lista_f, i)
+        b = a["CreditLine"].lower()
+        if "purchase" in b:
+            cont+=1
+    return cont
 
 def binaryUnicas(arr,x):
     low = 1
