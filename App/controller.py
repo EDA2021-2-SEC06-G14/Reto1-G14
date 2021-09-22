@@ -69,9 +69,12 @@ def loadArtworks(catalog):
     """
     artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
+    
+    arti = model.sortIDArtists(catalog)
     for work in input_file:
         model.addArtworks(catalog, work)
         model.addObject(catalog,work)
+        model.addNationArt(catalog, work, arti)
 
 
 def funcionReqUno(catalog,minimo,maximo):
@@ -82,3 +85,6 @@ def funcionReqDos(catalog, minimo, maximo):
     
 def funcionReqTres(catalog, nombre):
     return model.funcionReqTres(catalog, nombre)
+
+def funcionReqCuatro(catalog):
+    return model.funcionReqCuatro(catalog)

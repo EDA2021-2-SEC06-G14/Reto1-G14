@@ -184,7 +184,64 @@ def funcionReqTres(catalog, nombre):
                         artwork["URL"]])
         print(y)
 
+def funcionReqCuatro(catalog):
+    a = controller.funcionReqCuatro(catalog)
+    x = PrettyTable()
+    x.max_width = 25
+    x.hrules =ALL
+    x.field_names = (["Nationality", "ArtWorks"])
 
+    for i in range(1,10): 
+        ele = lt.getElement(a,i)
+        x.add_row([ele["Nationality"], lt.size(ele["obras"])])
+
+    print("============= Req No. 4 Inputs =============")
+    print("Ranking countries by their number of artworks in the MoMA...\n")
+    print("============= Req No. 4 Answer =============")
+    print("The TOP 10 Countries in the MoMA are: \n")
+
+    print(x)
+
+    top = lt.getElement(a, 1)
+
+    print("The TOP nacionality is: " + str(top["Nationality"]) + " with " + str(lt.size(top["obras"])) + " unique pieces.")
+    print("The first and latst 3 objects in the "  + str(top["Nationality"]) + "artworks list are: ")
+
+
+    y = PrettyTable()
+    y.field_names = (["ObjectID", "Title", "Artists", "Medium", "Date", "Dimensions", "Department", "Clasification", "URL"])
+    y.max_width = 25
+    y.hrules=ALL
+
+    top10 = top["obras"]
+    size = lt.size(top10)
+
+    if size >= 6:
+        for i in range(1, 4):
+            artwork = lt.getElement(top10, i)
+            y.add_row([artwork["ObjectID"], artwork["Title"], 
+                        artwork["ConstituentID"],
+                        artwork["Medium"], artwork["Date"],
+                        artwork["Dimensions"], artwork["Department"],artwork["Classification"], 
+                        artwork["URL"]])
+
+        for i in range(size-3, size):
+            artwork = lt.getElement(top10, i)
+            y.add_row([artwork["ObjectID"], artwork["Title"], 
+                        artwork["ConstituentID"],
+                        artwork["Medium"], artwork["Date"],
+                        artwork["Dimensions"], artwork["Department"],artwork["Classification"], 
+                        artwork["URL"]])
+        
+    else:
+        for i in range(1,size):
+            artwork = lt.getElement(top10, i)
+            y.add_row([artwork["ObjectID"], artwork["Title"], 
+                        artwork["ConstituentID"],
+                        artwork["Medium"], artwork["Date"],
+                        artwork["Dimensions"], artwork["Department"],artwork["Classification"], 
+                        artwork["URL"]])
+    print(y)
 
 
 """
@@ -215,20 +272,24 @@ while True:
         for cont in range(1, 10):
             obra = lt.getElement(otra, cont)
             print(obra)
-
-
-
+        work = catalog['Nationality_Artworks']
+        for cont in range(1, 4):
+            ab = lt.getElement(work, cont)
+    
     elif int(inputs[0]) == 2:
-        minimo=input(print("Año Inicial:\n"))
-        maximo=input(print("Año Final:\n"))
+        minimo=input("Año Inicial:\n")
+        maximo=input("Año Final:\n")
         funcionReqUno(catalog, minimo, maximo)
     elif int(inputs[0]) == 3:
-        minimo=input(print("Fecha Inicial:\n"))
-        maximo=input(print("Fecha Final:\n"))
+        minimo=input("Fecha Inicial:\n")
+        maximo=input("Fecha Final:\n")
         funcionReqDos(catalog, minimo, maximo)
     elif int(inputs[0]) == 4:
-        nombre=input(print("Nombre:\n"))
+        nombre=input("Nombre:\n")
         funcionReqTres(catalog, nombre)
+    elif int(inputs[0]) == 5:
+        funcionReqCuatro(catalog)
+
     else:
         sys.exit(0)
 sys.exit(0)

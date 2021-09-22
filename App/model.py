@@ -41,12 +41,13 @@ def newCatalogA():
     """
     catalog = {'Artists': None,
                'Artworks': None,
-               'Artists_Artworks':None}
+               'Artists_Artworks':None,
+               'Nationality_Artworks': None}
 
-    catalog['Artists'] = lt.newList('ARRAY_LIST')
-    catalog['Artworks'] = lt.newList('ARRAY_LIST')
+    catalog['Artists'] = lt.newList('ARRAY_LIST', cmpfunction = compareArtistID)
+    catalog['Artworks'] = lt.newList('ARRAY_LIST', cmpfunction =  compareObjectID)
     catalog['Artists_Artworks'] = lt.newList('ARRAY_LIST')
-
+    catalog['Nationality_Artworks'] = lt.newList('ARRAY_LIST')
 
     return catalog
 # Funciones para agregar informacion al catalogo
@@ -60,6 +61,7 @@ def addArtists(catalog, artist):
 
 def addArtworks(catalog, artwork):
     # Se adiciona el libro a la lista de libros
+
     obra = {
         'ObjectID':artwork['ObjectID'],
         'ConstituentID':artwork['ConstituentID'],
@@ -108,25 +110,64 @@ def addObject(catalog,work):
         lt.changeInfo(catalog['Artists_Artworks'], index, i_insert)
     
 
+def addNationArt(catalog, work, arti):
+
+    artists = work["ConstituentID"].replace("[","").replace("]", "").replace(" ","").split(",")
+    for i in artists:
+        pos = binary_search(arti, int(i))
+        artista = lt.getElement(catalog['Artists'], pos)
+
+        if artista["Nationality"].lower() in (None,"", "unknown"):
+            artista["Nationality"] = "nationality unknown"
+        
+        people = ""
+        
+        for j in artists:
+            po = binary_search(arti, int(j))
+
+            if len(artists) > 1:
+                people = people + str(lt.getElement(arti, po)["DisplayName"]) + ", "
+            else:
+                people = people + str(lt.getElement(arti, po)["DisplayName"]) 
+
+
+        art = {'ObjectID':work['ObjectID'],
+                'ConstituentID': people,
+                'Title':work['Title'],
+                'Medium':work['Medium'],
+                'Date': work['Date'],
+                'Dimensions':work['Dimensions'],
+                'CreditLine':work['CreditLine'],
+                'DateAcquired':work['DateAcquired'],
+                'Department':work['Department'],
+                'URL':work['URL'],
+                'Classification':work['Classification'],
+                'Nationality': artista['Nationality'].lower()
+            }
+
+        lt.addLast(catalog['Nationality_Artworks'], art)
+
+
 def sortAux(catalog):
     ordenado = sa.sort(catalog,cmpFunctionIndice)
     return ordenado
 
+def sortIDArtists(catalog):
+    p = catalog["Artists"]
+    orde = sa.sort(p, cmpIDArtistas)
+    return orde
+
 def binary_search(arr, x):
-    low = 0
-    high = lt.size(arr) - 1
-    mid = 0
- 
+    low = 1
+    high = lt.size(arr)
+    mid = 1
     while low <= high:
- 
         mid = (high + low) // 2
         comp= lt.getElement(arr,mid)
         ahorasi=int(comp["ConstituentID"])
- 
         # If x is greater, ignore left half
         if ahorasi < x:
             low = mid + 1
- 
         # If x is smaller, ignore right half
         elif ahorasi > x:
             high = mid - 1
@@ -134,7 +175,6 @@ def binary_search(arr, x):
         # means x is present at mid
         else:
             return mid
- 
     # If we reach here, then the element was not present
     return -1
 
@@ -149,9 +189,9 @@ def funcionReqUno(catalog,minimo,maximo):
     return la_lista
 
 def binary_search_min(arr, x):
-    low = 0
+    low = 1
     high = lt.size(arr)
-    mid = 0
+    mid = 1
  
     while low <= high:
  
@@ -179,9 +219,9 @@ def binary_search_min(arr, x):
     return -1
 
 def binary_search_max(arr, x):
-    low = 0
+    low = 1
     high = lt.size(arr)
-    mid = 0
+    mid = 1
  
     while low <= high:
  
@@ -207,63 +247,6 @@ def binary_search_max(arr, x):
  
     # If we reach here, then the element was not present
     return -1
-#def binary_search_max(arr, x):
-    #"""
-    #CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
-    #https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
-    #"""
-    #low = 0
-    #high = lt.size(arr) - 1
-    #mid = 0
-    #rta=0
- 
-    #while low <= high:
- 
-        #mid = int((high - low) / 2 + low)
-        #ele=lt.getElement(arr, mid)
- 
-        # If x is greater, ignore left half
-        #if int(ele["BeginDate"]) > x:
-            #high = mid - 1
- 
-        # If x is smaller, ignore right half
-        #elif int(ele["BeginDate"]) == x:
-            #rta=mid
-            #low = mid + 1
-        #else:
-            #low = mid + 1
-    #if rta == 0:
-        #rta= mid+2
-    #return rta
-
-#def binary_search_min(arr, x):
-    #"""
-    #CODIGO SACADO DE: https://www.geeksforgeeks.org/python-program-for-binary-search/
-    #https://stackoverflow.com/questions/13197552/using-binary-search-with-sorted-array-with-duplicates
-    #"""
-    #low = 0
-    #high = lt.size(arr) - 1
-    #mid = 0
-    #rta=0
- 
-    #while low <= high:
- 
-        #mid = int((high - low) / 2 + low)
-        #ele=lt.getElement(arr, mid)
- 
-        # If x is greater, ignore left half
-        #if int(ele["BeginDate"]) > x:
-            #high = mid - 1
- 
-        # If x is smaller, ignore right half
-        #elif int(ele["BeginDate"]) == x:
-            #rta=mid
-            #high = mid - 1
-        #else:
-            #low = mid + 1
-    #if rta == 0:
-        #rta=mid
-    #return rta
 
 def funcionReqDos(catalog, minimo, maximo):
     mini= minimo[0:4]+minimo[5:7]+minimo[8:10]
@@ -347,6 +330,72 @@ def funcionReqTres(catalog, nombre):
         return tupla
 
 
+def funcionReqCuatro(catalog):
+    data = sa.sort(catalog['Nationality_Artworks'], cmpnationality)
+    nat = lt.newList("ARRAY_LIST")
+    low = 1
+    size = lt.size(data)
+    while low <= size:
+
+        if low == size:
+            
+            temp = lt.subList(data, low, 1)
+
+            pais = {'Nationality': lt.getElement(data, low)['Nationality'],
+                        'obras': temp}
+
+            lt.addLast(nat,pais)
+
+            low += 1
+
+        else:
+
+            high = binmax(data, lt.getElement(data, low)["Nationality"])
+            temp = lt.subList(data, low, high - low + 1)
+
+            pais = {'Nationality': lt.getElement(data, low)['Nationality'],
+                        'obras': temp}
+
+            lt.addLast(nat,pais)
+
+            low = high + 1
+
+    a = sa.sort(nat, cmpsize)
+
+    return a
+    
+
+def binmax(arr, x):
+    low = 0
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+        ele=lt.getElement(arr, mid)
+        begin=ele["Nationality"]
+ 
+        # If x is greater, ignore left half
+        if begin < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif begin > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            if mid < lt.size(arr)-1:
+                while begin==x:
+                    mid=mid+1
+                    ele=lt.getElement(arr, mid)
+                    begin=ele["Nationality"]
+                return mid-1
+            else:
+                return mid
+    # If we reach here, then the element was not present
+    return -1
 
 def cambiarTADmedios(arr, x):
     pos=0
@@ -372,10 +421,6 @@ def cambiarTADmedios(arr, x):
         }
         lt.addLast(arr,nuevodict)
 
-#def comparemedio(medio, medios):
-    #if (medio['Medium'].lower() == medios['Medium'].lower()):
-        #return 0
-    #return -1
         
 
 def normal_search_nombre(arr, x):
@@ -458,7 +503,7 @@ def binary_search_min2(arr, x):
     return rta
 
 def binary_search_id(arr, x):
-    low = 0
+    low = 1
     high = lt.size(arr)
     mid = 0
     xdepurado = x.replace("'","")
@@ -515,3 +560,27 @@ def cmpFunctionRdos(feuno, fedos):
     else:
         maxi=0
     return (int(mini) < int(maxi))
+
+
+def cmpnationality(nat1, nat2):
+    return nat1["Nationality"] < nat2["Nationality"]
+
+def cmpsize(obras1, obras2):
+    return int(lt.size(obras1["obras"])) > int(lt.size(obras2["obras"]))
+
+def compareObjectID(artwork1, artwor2):
+    if (artwork1["ObjectID"] == artwor2['ObjectID']):
+        return 0
+    elif (artwork1["ObjectID"] > artwor2['ObjectID']):
+        return 1
+    return -1
+
+def compareArtistID(artwork1, artwor2):
+    if (artwork1["ConstituentID"] == artwor2['ConstituentID']):
+        return 0
+    elif (artwork1["ConstituentID"] > artwor2['ConstituentID']):
+        return 1
+    return -1
+
+def cmpIDArtistas(artista1, artista2):
+    return int(artista1["ConstituentID"]) < int(artista2["ConstituentID"])
