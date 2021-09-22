@@ -203,8 +203,10 @@ def funcionReqCuatro(catalog):
     print(x)
 
     top = lt.getElement(a, 1)
+    
+    unicas = controller.obrasUnicas(top)
 
-    print("The TOP nacionality is: " + str(top["Nationality"]) + " with " + str(lt.size(top["obras"])) + " unique pieces.")
+    print("The TOP nacionality is: " + str(top["Nationality"]) + " with " + str(lt.size(unicas)) + " unique pieces.")
     print("The first and latst 3 objects in the "  + str(top["Nationality"]) + "artworks list are: ")
 
 

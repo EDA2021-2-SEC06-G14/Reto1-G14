@@ -397,6 +397,42 @@ def binmax(arr, x):
     # If we reach here, then the element was not present
     return -1
 
+
+def obrasUnicas(top):
+
+    new = lt.newList("ARRAY_LIST")
+
+    c = sa.sort(top["obras"], cmpunique)
+
+    for i in range(1, lt.size(c)+1):
+        b = lt.getElement(c,i)
+        present = binaryUnicas(new, int(b["ObjectID"]))
+        if present == -1:
+            lt.addLast(new, b)
+    return new
+
+
+def binaryUnicas(arr,x):
+    low = 1
+    high = lt.size(arr)
+    mid = 1
+    while low <= high:
+        mid = (high + low) // 2
+        comp= lt.getElement(arr,mid)
+        ahorasi=int(comp["ObjectID"])
+        # If x is greater, ignore left half
+        if ahorasi < x:
+            low = mid + 1
+        # If x is smaller, ignore right half
+        elif ahorasi > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            return mid
+    # If we reach here, then the element was not present
+    return -1
+
 def cambiarTADmedios(arr, x):
     pos=0
     final=lt.size(arr)
@@ -584,3 +620,6 @@ def compareArtistID(artwork1, artwor2):
 
 def cmpIDArtistas(artista1, artista2):
     return int(artista1["ConstituentID"]) < int(artista2["ConstituentID"])
+
+def cmpunique(obra1, obra2):
+    return int(obra1["ObjectID"])<int(obra2["ObjectID"])

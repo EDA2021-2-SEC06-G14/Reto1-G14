@@ -88,3 +88,6 @@ def funcionReqTres(catalog, nombre):
 
 def funcionReqCuatro(catalog):
     return model.funcionReqCuatro(catalog)
+
+def obrasUnicas(top):
+    return model.obrasUnicas(top) 
