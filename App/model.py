@@ -377,7 +377,7 @@ def funcionReqCin(catalog, nombre):
     cant+=1
     antiguas = lt.newList("ARRAY_LIST")
     costosas = lt.newList("ARRAY_LIST")
-    for i in range(indexmin,cant):
+    for i in range(indexmin,indexmax):
         costototal=0.0
         ele = lt.getElement(ordenado,i)
         costopeso=0
