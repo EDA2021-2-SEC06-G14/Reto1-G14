@@ -63,7 +63,7 @@ def addArtworks(catalog, artwork):
     # Se adiciona el libro a la lista de libros
 
     if artwork["Date"] == "":
-        artwork["Date"] = "0"
+        artwork["Date"] = "999999"
 
     obra = {
         'ObjectID':artwork['ObjectID'],
@@ -377,6 +377,7 @@ def funcionReqCin(catalog, nombre):
     indexmin = binary_search_mindept(ordenado, nombre)
     cant = indexmax-indexmin
     costoretotal=0.0
+    pesototal=0.0
     cant+=1
     antiguas = lt.newList("ARRAY_LIST")
     costosas = lt.newList("ARRAY_LIST")
@@ -388,15 +389,22 @@ def funcionReqCin(catalog, nombre):
             costopeso=float(-1)
         else:
             costopeso = float(ele["Weight (kg)"])*72
+            pesototal+= float(ele["Weight (kg)"])
         costomedidas=-1
         if (ele["Height (cm)"]!=None) and (ele["Height (cm)"]!=''):
             if (ele["Width (cm)"]!=None) and (ele["Width (cm)"]!=''):
                 if (ele['Depth (cm)']!=None) and (ele['Depth (cm)']!=''):
-                    depth= float(ele['Depth (cm)'])/100
-                    width = float(ele["Width (cm)"])/100
-                    height = float(ele["Height (cm)"])/100
-                    m3= depth*width*height
-                    costomedidas=m3*72
+                    if float(ele['Depth (cm)'])>0:
+                        depth= float(ele['Depth (cm)'])/100
+                        width = float(ele["Width (cm)"])/100
+                        height = float(ele["Height (cm)"])/100
+                        m3= depth*width*height
+                        costomedidas=m3*72
+                    else:
+                        width = float(ele["Width (cm)"])/100
+                        height = float(ele["Height (cm)"])/100
+                        m2= width*height
+                        costomedidas=m2*72
                 else:
                     width = float(ele["Width (cm)"])/100
                     height = float(ele["Height (cm)"])/100
@@ -418,7 +426,7 @@ def funcionReqCin(catalog, nombre):
             m2= radio*radio*math.pi
             costomedidas=m2*72
         costototal=max(costopeso,costomedidas)
-        if costototal<0:
+        if costototal<=0:
             costototal=48.0
         buscar= ele["ConstituentID"]
         byecorchetes = buscar.replace("[","")
@@ -447,9 +455,8 @@ def funcionReqCin(catalog, nombre):
     #AQUI SE SUPONE QUE YA TENEMOS LAS 2 LISTICAS LISTAS:)
     ordenantiguas = sa.sort(antiguas,cmpdate)
     ordencostosas = sa.sort(costosas,cmpcost)
-    tuplatriple = costoretotal,ordenantiguas,ordencostosas
-    return tuplatriple
-    
+    tuplatriple = costoretotal,ordenantiguas,ordencostosas,pesototal
+    return tuplatriple    
 
 def binmax(arr, x):
     low = 0
