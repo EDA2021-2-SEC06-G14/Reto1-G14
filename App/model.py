@@ -23,7 +23,7 @@
  *
  * Dario Correal - Version inicial
 """
-
+import math
 from DISClib.DataStructures.arraylist import getElement
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import mergesort as sa
@@ -76,7 +76,11 @@ def addArtworks(catalog, artwork):
         'Length (cm)':artwork['Length (cm)'],
         'Weight (kg)':artwork['Weight (kg)'],
         'Width (cm)':artwork['Width (cm)'],
-        'Classification':artwork['Classification']
+        'Classification':artwork['Classification'],
+        'Depth (cm)':artwork['Depth (cm)'],
+        'Diameter (cm)':artwork['Diameter (cm)'],
+        'Date':artwork['Date']
+
     }
     lt.addLast(catalog['Artworks'], obra)
 
@@ -363,6 +367,85 @@ def funcionReqCuatro(catalog):
     a = sa.sort(nat, cmpsize)
 
     return a
+
+def funcionReqCin(catalog, nombre):
+    ordenado = sa.sort(catalog["Artworks"],cmpdept)
+    indexmax = binary_search_maxdept(ordenado,nombre)
+    indexmin = binary_search_mindept(ordenado, nombre)
+    cant = indexmax-indexmin
+    costoretotal=0.0
+    cant+=1
+    antiguas = lt.newList("ARRAY_LIST")
+    costosas = lt.newList("ARRAY_LIST")
+    for i in range(indexmin,cant):
+        costototal=0.0
+        ele = lt.getElement(ordenado,i)
+        costopeso=0
+        if (ele["Weight (kg)"]==None) or (ele["Weight (kg)"]==''):
+            costopeso=float(-1)
+        else:
+            costopeso = float(ele["Weight (kg)"])*72
+        costomedidas=-1
+        if (ele["Height (cm)"]!=None) and (ele["Height (cm)"]!=''):
+            if (ele["Width (cm)"]!=None) and (ele["Width (cm)"]!=''):
+                if (ele['Depth (cm)']!=None) and (ele['Depth (cm)']!=''):
+                    depth= float(ele['Depth (cm)'])/100
+                    width = float(ele["Width (cm)"])/100
+                    height = float(ele["Height (cm)"])/100
+                    m3= depth*width*height
+                    costomedidas=m3*72
+                else:
+                    width = float(ele["Width (cm)"])/100
+                    height = float(ele["Height (cm)"])/100
+                    m2= width*height
+                    costomedidas=m2*72
+            elif (ele["Diameter (cm)"]!=None) and (ele["Diameter (cm)"]!=''):
+                radio = float(ele["Diameter (cm)"])/200
+                height = float(ele["Height (cm)"])/100
+                m3= radio*height*radio*math.pi
+                costomedidas=m3*72
+        elif (ele["Width (cm)"]!=None) and (ele["Width (cm)"]!=''):
+            if (ele['Length (cm)']!=None) and (ele['Length (cm)']!=''):
+                width = float(ele["Width (cm)"])/100
+                lenght = float(ele["Length (cm)"])/100
+                m2=width*lenght
+                costomedidas=m2*72
+        elif (ele["Diameter (cm)"]!=None) and (ele["Diameter (cm)"]!=''):
+            radio = float(ele["Diameter (cm)"])/200
+            m2= radio*radio*math.pi
+            costomedidas=m2*72
+        costototal=max(costopeso,costomedidas)
+        if costototal<0:
+            costototal=48.0
+        buscar= ele["ConstituentID"]
+        byecorchetes = buscar.replace("[","")
+        byecorchetedos = byecorchetes.replace("]","")
+        authors = byecorchetedos.split(",")
+        autores=""
+        for x in authors:
+            index = binary_search(catalog['Artists_Artworks'],int(x))
+            ele = lt.getElement(catalog['Artists_Artworks'], index)
+            autores = autores +"-"+ ele['DisplayName'] + "-"
+        agregar = {
+            'ObjectID':ele['ObjectID'],
+            'Title':ele['Title'],
+            'Artists':autores,
+            'Medium':ele['Medium'],
+            'Dimensions':ele['Dimensions'],
+            'DateAcquired':ele['DateAcquired'],
+            'Classification':ele['Classification'],
+            'TransCost (USD)':str(costototal),
+            'URL':ele['URL'],
+            'Date':ele['Date']
+        }
+        lt.addLast(antiguas,agregar)
+        lt.addLast(costosas,agregar)
+        costoretotal+=costototal
+    #AQUI SE SUPONE QUE YA TENEMOS LAS 2 LISTICAS LISTAS:)
+    ordenantiguas = sa.sort(antiguas,cmpdate)
+    ordencostosas = sa.sort(costosas,cmpcost)
+    tuplatriple = costoretotal,ordenantiguas,ordencostosas
+    return tuplatriple
     
 
 def binmax(arr, x):
@@ -396,6 +479,148 @@ def binmax(arr, x):
                 return mid
     # If we reach here, then the element was not present
     return -1
+
+def binary_search_maxdept(arr, x):
+    low = 1
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+        ele=lt.getElement(arr, mid)
+        begin=ele["Department"]
+ 
+        # If x is greater, ignore left half
+        if begin < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif begin > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            if mid < lt.size(arr)-1:
+                while begin==x:
+                    mid=mid+1
+                    ele=lt.getElement(arr, mid)
+                    begin=ele["Department"]
+                return mid-1
+            else:
+                return mid
+    # If we reach here, then the element was not present
+    return -1
+
+def binary_search_mindept(arr, x):
+    low = 1
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = (high + low) // 2
+        ele=lt.getElement(arr, mid)
+        begin=ele["Department"]
+ 
+        # If x is greater, ignore left half
+        if begin < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif begin > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            if mid < lt.size(arr)-1:
+                while begin==x:
+                    mid=mid-1
+                    ele=lt.getElement(arr, mid)
+                    begin=ele["Department"]
+                return mid+1
+            else:
+                return mid
+    # If we reach here, then the element was not present
+    return -1
+
+def binmaxreqdos(arr, x):
+    low = 1
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+        e = ele["DateAcquired"]
+        if (e!=None) and (e!=""):
+            m= e[0:4]+e[5:7]+e[8:10]
+            m= int(m)
+        else:
+            m=0
+ 
+        # If x is greater, ignore left half
+        if m < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif m > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            if mid < lt.size(arr)-1:
+                while m==x:
+                    mid=mid+1
+                    ele=lt.getElement(arr, mid)
+                    e = ele["DateAcquired"]
+                    m= e[0:4]+e[5:7]+e[8:10]
+                    m= int(m)
+                return mid-1
+            else:
+                return mid
+    # If we reach here, then the element was not present
+    return mid
+
+def binminreqdos(arr, x):
+    low = 1
+    high = lt.size(arr)
+    mid = 0
+ 
+    while low <= high:
+ 
+        mid = int((high - low) / 2 + low)
+        ele=lt.getElement(arr, mid)
+        e = ele["DateAcquired"]
+        if (e!=None) and (e!=""):
+            m= e[0:4]+e[5:7]+e[8:10]
+            m= int(m)
+        else:
+            m=0
+ 
+        # If x is greater, ignore left half
+        if m < x:
+            low = mid + 1
+ 
+        # If x is smaller, ignore right half
+        elif m > x:
+            high = mid - 1
+ 
+        # means x is present at mid
+        else:
+            if mid < lt.size(arr)-1:
+                while m==x:
+                    mid=mid-1
+                    ele=lt.getElement(arr, mid)
+                    e = ele["DateAcquired"]
+                    m= e[0:4]+e[5:7]+e[8:10]
+                    m= int(m)
+                return mid+1
+            else:
+                return mid
+    # If we reach here, then the element was not present
+    return mid
 
 
 def obrasUnicas(top):
@@ -500,7 +725,7 @@ def binary_search_max2(arr, x):
         else:
             low = mid + 1
     if rta == 0:
-        rta= mid+2
+        rta= mid-1
     return rta
 
 def binary_search_min2(arr, x):
@@ -535,7 +760,7 @@ def binary_search_min2(arr, x):
         else:
             low = mid + 1
     if rta == 0:
-        rta= mid+2
+        rta= mid-1
     return rta
 
 def binary_search_id(arr, x):
@@ -623,3 +848,12 @@ def cmpIDArtistas(artista1, artista2):
 
 def cmpunique(obra1, obra2):
     return int(obra1["ObjectID"])<int(obra2["ObjectID"])
+
+def cmpdept(deptuno,deptdos):
+    return (deptuno["Department"]<deptdos["Department"])
+
+def cmpdate(dateuno, datedos):
+    return (int(dateuno['Date'])<int(datedos['Date']))
+
+def cmpcost(costuno, costdos):
+    return (float(costuno['TransCost (USD)'])>float(costdos['TransCost (USD)']))

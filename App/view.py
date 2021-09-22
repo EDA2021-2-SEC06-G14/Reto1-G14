@@ -245,6 +245,60 @@ def funcionReqCuatro(catalog):
                         artwork["URL"]])
     print(y)
 
+def funcionReqCin(catalog, nombre):
+    costo,tad_antiguas,tad_costosas = controller.funcionReqCin(catalog, nombre)
+    print("EL COSTO TOTAL ES:"+ str(costo))
+    print("EL NUMERO DE OBRAS ES:"+ str(lt.size(tad_antiguas)))
+    #if lt.size(tad_antiguas)==0:
+        #print("THERE ARE NO WORKS BY THAT DEPARTMENT")
+    #else:
+        #size = lt.size(tad_medios)
+        #sizes = lt.size(tad_obras)
+        #primer = lt.getElement(tad_obras,1)
+        #const = primer["ConstituentID"]
+        #print("============= Req No. 3 Inputs =============")
+        #print("Examine the work of the artist named: " + str(nombre) + "\n")
+        #print("============= Req No. 3 Answer =============")
+        #print(str(nombre)+ " with MoMA ID " + str(const) + " has " + str(sizes) + "pieces in hisher name at the museum \n")
+        #print("There are "+ str(size) +"different mediums in his her work")
+        #print("Her his top 5 techniques are:")
+        #x = PrettyTable()  
+        #x.field_names = (["Medium","Count"])
+        #x.max_width = 25
+        #x.hrules=ALL
+        #if size >= 5:
+            #for i in range(1, 6):
+                #medio = lt.getElement(tad_medios, i)
+                #x.add_row([medio["Medium"], medio["Count"]])
+    
+        #else:
+            #for i in range(1,size+1):
+                #medio = lt.getElement(tad_medios, i)
+                #x.add_row([medio["Medium"], medio["Count"]])
+        #print(x)
+        #lamas = lt.getElement(tad_medios,1)
+        #usada = lamas['Medium']
+        #numero = lamas['Count']
+        #print("His her most used medium is: " + str(usada) + " with "+ str(numero)+"pieces")
+        #y = PrettyTable()
+        #y.field_names = (["ObjectID","Title", "Medium", "Dimensions",
+                      #"DateAcquired", "Classification", "URL"])
+        #y.max_width = 25
+        #y.hrules=ALL
+        #if sizes >= 3:
+            #for i in range(1, 4):
+                #artwork = lt.getElement(tad_obras, i)
+            
+                #y.add_row([artwork["ObjectID"], artwork["Title"], 
+                        #artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"],artwork["Classification"], 
+                        #artwork["URL"]])
+        #else:
+            #for i in range(1,size+1):
+                #artwork = lt.getElement(tad_obras, i)
+                #y.add_row([artwork["ObjectID"], artwork["Title"], 
+                        #artwork["Medium"], artwork["Dimensions"], artwork["DateAcquired"],artwork["Classification"], 
+                        #artwork["URL"]])
+        #print(y)
 
 """
 Menu principal
@@ -291,7 +345,9 @@ while True:
         funcionReqTres(catalog, nombre)
     elif int(inputs[0]) == 5:
         funcionReqCuatro(catalog)
-
+    elif int(inputs[0]) == 6:
+        nombre=input(print("Departamento:\n"))
+        funcionReqCin(catalog, nombre)
     else:
         sys.exit(0)
 sys.exit(0)
