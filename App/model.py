@@ -424,8 +424,8 @@ def funcionReqCin(catalog, nombre):
         autores=""
         for x in authors:
             index = binary_search(catalog['Artists_Artworks'],int(x))
-            ele = lt.getElement(catalog['Artists_Artworks'], index)
-            autores = autores +"-"+ ele['DisplayName'] + "-"
+            elemento = lt.getElement(catalog['Artists_Artworks'], index)
+            autores = autores +"-"+ elemento['DisplayName'] + "-"
         agregar = {
             'ObjectID':ele['ObjectID'],
             'Title':ele['Title'],
