@@ -453,33 +453,33 @@ def funcionReqCin(catalog, nombre):
 
 def binmax(arr, x):
     low = 0
-    high = lt.size(arr)
+    high = lt.size(arr)-1
     mid = 0
  
     while low <= high:
  
-        mid = (high + low) // 2
-        ele=lt.getElement(arr, mid)
+        mid = low + (high - low) // 2
+        ele=lt.getElement(arr, mid+1)
         begin=ele["Nationality"]
  
         # If x is greater, ignore left half
-        if begin < x:
-            low = mid + 1
- 
-        # If x is smaller, ignore right half
-        elif begin > x:
+        
+        if x < begin:
             high = mid - 1
+
+        elif x > begin:
+            low = mid + 1
  
         # means x is present at mid
         else:
             if mid < lt.size(arr)-1:
-                while begin==x:
+                while begin==x and mid < lt.size(arr):
                     mid=mid+1
                     ele=lt.getElement(arr, mid)
                     begin=ele["Nationality"]
-                return mid-1
-            else:
                 return mid
+            else:
+                return mid+1
     # If we reach here, then the element was not present
     return -1
 
