@@ -634,7 +634,7 @@ def binminreqdos(arr, x):
     return mid
 
 
-def obrasUnicas(top):
+"""def obrasUnicas(top):
 
     new = lt.newList("ARRAY_LIST")
 
@@ -645,7 +645,7 @@ def obrasUnicas(top):
         present = binaryUnicas(new, int(b["ObjectID"]))
         if present == -1:
             lt.addLast(new, b)
-    return new
+    return new"""
 
 def purchased(lista_f):
     
