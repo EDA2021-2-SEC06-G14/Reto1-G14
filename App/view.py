@@ -96,14 +96,14 @@ def funcionReqUno(catalog, minimo, maximo):
 
 def funcionReqDos(catalog, minimo, maximo):
     lista_f = controller.funcionReqDos(catalog, minimo, maximo)
-    #pur =  controller.purchased(lista_f)
+    pur =  controller.purchased(lista_f)
 
     size = lt.size(lista_f)
     print("============= Req No. 2 Inputs =============")
     print("Artworks acquired betweem " + str(minimo) + " and " + str(maximo) + "\n")
     print("============= Req No. 2 Answer =============")
     print("There MoMA acquired " + str(size) + " unique pieces between " + str(minimo) + " and " + str(maximo) + "\n")
-    #print(str(pur) + " were purhcased \n")
+    print(str(pur) + " were purhcased \n")
     print("The first and last 3 artists in range are")
     x = PrettyTable()
     
