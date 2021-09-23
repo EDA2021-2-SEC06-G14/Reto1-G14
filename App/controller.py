@@ -25,65 +25,75 @@ import model
 import csv
 
 
+
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
-
-# Inicialización del Catálogo de libros
-
-def initCatalog(tipo):
+def initCatalogA():
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog(tipo)
+    catalog = model.newCatalogA()
     return catalog
+
 
 # Funciones para la carga de datos
 
-def loadData(catalog, tipo):
+
+def loadData(catalog):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
     """
-    loadObras(catalog, tipo)
-    loadArtistas(catalog, tipo)
+    loadArtists(catalog)
+    loadArtworks(catalog)
+
+
+def loadArtists(catalog):
+    """
+    Carga los libros del archivo.  Por cada libro se toman sus autores y por
+    cada uno de ellos, se crea en la lista de autores, a dicho autor y una
+    referencia al libro que se esta procesando.
+    """
+    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-large.csv'
+    input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
+    for artist in input_file:
+        model.addArtists(catalog, artist)
+        model.addArtists_Artworks(catalog, artist)
+    catalog['Artists_Artworks']=model.sortAux(catalog['Artists_Artworks'])
+
+
+def loadArtworks(catalog):
+    """
+    Carga todos los tags del archivo y los agrega a la lista de tags
+    """
+    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-large.csv'
+    input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     
+    arti = model.sortIDArtists(catalog)
+    for work in input_file:
+        model.addArtworks(catalog, work)
+        model.addObject(catalog,work)
+        model.addNationArt(catalog, work, arti)
 
-def loadObras(catalog, tipo):
-    """
-    Carga las obras 
-    """
-    Artworksfile = cf.data_dir + "MoMA/Artworks-utf8-10pct.csv"
-    inputfile = csv.DictReader(open(Artworksfile, encoding='utf8'))
-    for artwork in inputfile:
-        model.addArtwork(catalog, artwork, tipo)
 
+def funcionReqUno(catalog,minimo,maximo):
+    return model.funcionReqUno(catalog,minimo,maximo)
+
+def funcionReqDos(catalog, minimo, maximo):
+    return model.funcionReqDos(catalog, minimo, maximo)
     
+def funcionReqTres(catalog, nombre):
+    return model.funcionReqTres(catalog, nombre)
 
-def loadArtistas(catalog, tipo):
-    """
-    Carga los artistas
-    """
-    Artistfile = cf.data_dir + "MoMA/Artists-utf8-10pct.csv"
-    inputfile = csv.DictReader(open(Artistfile, encoding = "utf8"))
-    for artist in inputfile:
-        model.addArtist(catalog, artist)
+def funcionReqCuatro(catalog):
+    return model.funcionReqCuatro(catalog)
 
-# Funciones de ordenamiento
+def funcionReqCin(catalog, nombre):
+    return model.funcionReqCin(catalog, nombre)
 
-def GetArtistas(catalog, inicial, final, tipo):
-    """
-    Encontrar los artistas en un rango de anos     
-    """
-    Artistas = model.GetArtistas(catalog, inicial, final, tipo)
+def obrasUnicas(top):
+    return model.obrasUnicas(top) 
 
-    return Artistas
-
-def GetArtwork(catalog, inicial, final, size, sort, tipo):
-    """
-    Encontrar obras en rango de acquiredate 
-    """
-    Obras = model.GetArtwork(catalog, int(inicial.replace("-", "")), int(final.replace("-", "")), size, sort, tipo)
-    return Obras 
-
-# Funciones de consulta sobre el catálogo
+def purchased(lista_f):
+    return model.purchased(lista_f)
